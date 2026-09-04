@@ -1,0 +1,37 @@
+name: Validate public release
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  validate:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out public tree
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Validate inventory, boundaries, links, and notebooks
+        shell: bash
+        run: |
+          args=(.)
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            if [[ "${GITHUB_REF_NAME}" =~ -rc\.[0-9]+$ ]]; then
+              channel=rc
+            elif [[ "${GITHUB_REF_NAME}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              channel=production
+            else
+              echo "Unsupported release tag: ${GITHUB_REF_NAME}" >&2
+              exit 1
+            fi
+            args+=(--expected-tag "${GITHUB_REF_NAME}" --expected-channel "$channel")
+          fi
+          python3 .github/scripts/validate_public.py "${args[@]}"

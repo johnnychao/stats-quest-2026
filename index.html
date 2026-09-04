@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>統計冒險之旅 2026</title>
+<meta name="description" content="數據分析暨機器學習應用班 · 機器學習的統計基礎（24 小時）闖關入口：三座山峰、16 本 Colab 筆記本（13 本主線、3 本支線）、通關密語蓋章、XP 與稱號。資料冒險之旅系列第二部。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232F6B8F'/%3E%3Cpath d='M8 49 25 18l8 15 7-12 16 28z' fill='%23fff'/%3E%3Ccircle cx='49' cy='15' r='6' fill='%23FFF4D6'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#F1F4F2; --bg2:#F9FBFA; --paper:#FFFFFF; --ink:#16302B; --ink2:#4B635E; --line:#CDDAD5;
+  --sea:#2F6B8F; --sea2:#DFEBF3; --stamp:#C8412B; --gold:#B8860B; --gold2:#FFF4D6;
+  --on-sea:#FFFFFF; --on-stamp:#FFFFFF;
+  --ok:#2F8F5B; --warn:#B7791F; --shadow:0 6px 24px rgba(22,48,43,.08);
+  --f-display:"Microsoft JhengHei","PingFang TC","Noto Sans TC","PMingLiU",serif;
+  --f-body:"Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono","Consolas","Menlo",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#101F1C; --bg2:#152925; --paper:#1A3430; --ink:#E8F0ED; --ink2:#A9C0BA; --line:#2C4B45;
+    --sea:#7FB5D6; --sea2:#1E3A4A; --stamp:#F07A62; --gold:#E8C160; --gold2:#3B3417;
+    --on-sea:#102A38; --on-stamp:#2A0F0A;
+    --ok:#6CCB93; --warn:#E0A84A; --shadow:0 6px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101F1C; --bg2:#152925; --paper:#1A3430; --ink:#E8F0ED; --ink2:#A9C0BA; --line:#2C4B45;
+  --sea:#7FB5D6; --sea2:#1E3A4A; --stamp:#F07A62; --gold:#E8C160; --gold2:#3B3417;
+  --on-sea:#102A38; --on-stamp:#2A0F0A;
+  --ok:#6CCB93; --warn:#E0A84A; --shadow:0 6px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.65;font-size:16px;
+  background-image:radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--line) 60%, transparent) 1px, transparent 0);background-size:28px 28px}
+a{color:var(--sea)}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.25;text-wrap:balance;margin:0}
+.skip-link{position:fixed;left:16px;top:8px;z-index:100;transform:translateY(-160%);padding:10px 14px;border-radius:10px;background:var(--ink);color:var(--bg);font-weight:700;text-decoration:none}
+.skip-link:focus{transform:translateY(0)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:18px;height:60px}
+.brand{font-family:var(--f-display);font-size:1.25rem;font-weight:700;color:var(--ink);text-decoration:none;letter-spacing:.02em;white-space:nowrap;display:inline-flex;align-items:center;min-height:44px}
+.brand small{font-family:var(--f-mono);font-size:.7rem;color:var(--sea);margin-left:8px;letter-spacing:.08em}
+.nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+.nav a{text-decoration:none;color:var(--ink2);padding:6px 10px;border-radius:999px;font-size:.9rem;min-height:44px;display:inline-flex;align-items:center}
+.nav a:hover,.nav a:focus-visible{background:var(--sea2);color:var(--ink)}
+.series{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:18px 0 0;font-size:.85rem;color:var(--ink2)}
+.series .pill{min-height:44px;padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:var(--paper);display:inline-flex;align-items:center}
+.series .pill.now{background:var(--sea);color:var(--on-sea);border-color:var(--sea)}
+.hero{padding:20px 0 20px;display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:start}
+.hero h1{font-size:clamp(2rem,4.5vw,3.1rem);font-weight:700;letter-spacing:.01em;margin-top:10px}
+.hero h1 em{font-style:normal;color:var(--sea)}
+.hero .lead{color:var(--ink2);max-width:34em;margin:14px 0 0;font-size:1.05rem}
+.hero .meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border:1px solid var(--line);border-radius:999px;background:var(--paper);font-size:.85rem;color:var(--ink2)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:20px}
+.adv h2{font-size:1.1rem;color:var(--ink2);font-weight:400;letter-spacing:.12em;text-transform:uppercase;font-family:var(--f-mono)}
+.adv .who{display:flex;gap:8px 10px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.adv .who label,.legacy form label{flex-basis:100%;font-size:.82rem;font-weight:700;color:var(--ink2)}
+.adv input{flex:1;min-width:0;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg2);color:var(--ink)}
+.adv input:focus-visible,.stamp-form input:focus-visible{outline:2px solid var(--sea);outline-offset:1px}
+.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--bg2);color:var(--ink);padding:9px 14px;border-radius:10px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:transform .12s ease, background .12s}
+.btn:hover{transform:translateY(-1px)} .btn:active{transform:translateY(0)}
+.btn:focus-visible{outline:2px solid var(--sea);outline-offset:2px}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-sea{background:var(--sea);color:var(--on-sea);border-color:var(--sea)}
+.btn-colab{background:var(--gold2);border-color:color-mix(in srgb,var(--gold) 45%,var(--line));color:var(--ink)}
+.btn-stamp{background:var(--stamp);color:var(--on-stamp);border-color:var(--stamp)}
+.adv .rank{display:flex;align-items:baseline;gap:12px;margin-top:16px;flex-wrap:wrap}
+.adv .rank .title{font-family:var(--f-display);font-size:1.6rem;font-weight:700}
+.adv .rank .xp{font-family:var(--f-mono);color:var(--ink2);font-variant-numeric:tabular-nums}
+.bar{height:12px;background:var(--bg2);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--sea),var(--gold));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.adv .stats{display:flex;gap:18px;margin-top:12px;font-size:.9rem;color:var(--ink2);flex-wrap:wrap}
+.adv .stats b{color:var(--ink);font-variant-numeric:tabular-nums}
+.badges{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.badge{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;border:1px dashed var(--line);font-size:1.1rem;filter:grayscale(1);opacity:.45;background:var(--bg2)}
+.badge.on{filter:none;opacity:1;border:2px solid var(--gold);background:var(--gold2);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 25%,transparent)}
+.badge.legacy{width:auto;padding:0 10px;border-radius:999px;font-size:.8rem;font-family:var(--f-body)}
+.legacy{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+.legacy h3{font-size:.95rem;font-family:var(--f-body);color:var(--ink2);font-weight:600}
+.legacy p{margin:4px 0 8px;font-size:.85rem;color:var(--ink2)}
+.legacy form{display:flex;gap:8px;flex-wrap:wrap}
+.legacy input{flex:1;min-width:0;font:inherit;font-family:var(--f-mono);font-size:.85rem;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg2);color:var(--ink);text-transform:uppercase}
+.legacy .done{display:flex;gap:10px;align-items:center;font-size:.9rem}
+.today{margin:18px 0 0;border-radius:14px;padding:14px 18px;background:var(--sea2);border:1px solid color-mix(in srgb,var(--sea) 35%,var(--line));display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.today .t-label{font-family:var(--f-mono);font-size:.75rem;letter-spacing:.12em;color:var(--sea);text-transform:uppercase}
+.today b{font-family:var(--f-display);font-size:1.15rem}
+.today .t-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.today .t-links a{font-size:.85rem;min-height:44px;display:inline-flex;align-items:center}
+main#top,.map,.island,.book,.supply{scroll-margin-top:76px}
+main#top:focus{outline:none}
+.map{margin:28px 0 8px}
+.map h2{font-size:1.5rem;margin-bottom:6px}
+.map p.sub{color:var(--ink2);margin:0 0 10px}
+.chart{width:100%;height:auto;display:block;border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,var(--sea2) 0%,var(--bg2) 70%);box-shadow:var(--shadow)}
+.chart text{font-family:var(--f-display);fill:var(--ink)}
+.chart .isl-label{font-size:15px;font-weight:700}
+.chart .isl-sub{font-size:11px;fill:var(--ink2);font-family:var(--f-mono)}
+.chart .route{fill:none;stroke:var(--ink2);stroke-width:2;stroke-dasharray:6 7;opacity:.7}
+.chart .node{cursor:pointer}
+.chart .node:hover .peak{filter:brightness(1.08)}
+.chart .peak{stroke:var(--paper);stroke-width:2}
+.chart .snow{fill:#fff;opacity:.85}
+.chart .flag{font-size:22px}
+.chart .done-ring{fill:none;stroke:var(--gold);stroke-width:3}
+.island{margin:34px 0 0;padding:22px;border-radius:20px;background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);position:relative}
+.island-head{display:flex;gap:18px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.island-day{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.1em;color:color-mix(in srgb,var(--island) 65%,var(--ink));background:color-mix(in srgb,var(--island) 12%,var(--paper));padding:3px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--island) 40%,transparent)}
+.island h3{font-size:1.6rem;margin:8px 0 4px}
+.island-theme{margin:0;color:var(--ink2)}
+.island-ch{margin:6px 0 0;font-size:.9rem;color:var(--ink2)}
+.island-progress{display:flex;align-items:center;gap:12px}
+.ring{position:relative;width:64px;height:64px;display:grid;place-items:center}
+.ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--line);stroke-width:3.2}
+.ring-fg{fill:none;stroke:var(--island);stroke-width:3.2;stroke-linecap:round;stroke-dasharray:100 100;stroke-dashoffset:100;transition:stroke-dashoffset .8s ease}
+.ring-num{font-family:var(--f-mono);font-size:.8rem;font-variant-numeric:tabular-nums}
+.island-badge{font-size:.85rem;padding:5px 10px;border-radius:999px;border:1px dashed var(--line);color:var(--ink2)}
+.island.complete .island-badge{border:2px solid var(--gold);background:var(--gold2);color:var(--ink);font-weight:700}
+.levels{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-top:18px}
+.lv{position:relative;display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:14px;border:1px solid var(--line);background:var(--bg2);overflow:hidden;transition:box-shadow .2s}
+.lv:hover{box-shadow:var(--shadow)}
+.lv.kind-boss,.lv.kind-final{background:linear-gradient(160deg,color-mix(in srgb,var(--island) 10%,var(--bg2)),var(--bg2));border-color:color-mix(in srgb,var(--island) 40%,var(--line))}
+.lv-head{display:flex;gap:8px;align-items:center;font-family:var(--f-mono);font-size:.75rem;color:var(--ink2)}
+.lv-id{font-weight:700;color:color-mix(in srgb,var(--island) 65%,var(--ink));letter-spacing:.06em}
+.lv-kind{padding:1px 8px;border-radius:999px;background:color-mix(in srgb,var(--island) 14%,var(--paper))}
+.lv-manual{padding:1px 8px;border-radius:999px;background:var(--gold2);color:var(--ink);border:1px solid color-mix(in srgb,var(--gold) 45%,transparent)}
+.lv-xp{margin-left:auto;color:color-mix(in srgb,var(--gold) 60%,var(--ink));font-weight:700;font-variant-numeric:tabular-nums}
+.lv-name{font-size:1.12rem;display:flex;gap:8px;align-items:center}
+.lv-book{margin:0;font-size:.82rem;color:var(--ink2)}
+.lv-goals summary{cursor:pointer;font-size:.85rem;color:var(--sea);min-height:44px;display:flex;align-items:center}
+.lv-goals ul{margin:6px 0 0;padding-left:18px;font-size:.88rem;color:var(--ink2)}
+.lv-actions{margin-top:auto;display:flex;flex-direction:column;gap:8px}
+.stamp-form{display:flex;gap:6px}
+.stamp-form input{flex:1;min-width:0;font:inherit;font-family:var(--f-mono);font-size:.85rem;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);text-transform:uppercase}
+.stamp-form .btn{padding:8px 12px}
+.stamp{position:absolute;right:14px;bottom:14px;width:84px;height:84px;border-radius:50%;border:3px double var(--stamp);color:var(--stamp);display:none;flex-direction:column;align-items:center;justify-content:center;font-family:var(--f-display);font-weight:700;transform:rotate(-14deg);background:color-mix(in srgb,var(--stamp) 8%,transparent);mix-blend-mode:multiply;pointer-events:none}
+.stamp-txt{font-size:1.35rem;line-height:1}
+.stamp-date{font-family:var(--f-mono);font-size:.62rem;letter-spacing:.08em;margin-top:3px}
+.lv.cleared .stamp{display:flex;animation:stampIn .45s cubic-bezier(.2,1.4,.4,1)}
+.lv.cleared .stamp-form{display:none}
+.lv.cleared{border-color:color-mix(in srgb,var(--stamp) 40%,var(--line))}
+@keyframes stampIn{0%{transform:rotate(-14deg) scale(2.2);opacity:0}60%{transform:rotate(-14deg) scale(.95);opacity:1}100%{transform:rotate(-14deg) scale(1)}}
+.cheat{margin-top:16px}
+.cheat summary{cursor:pointer;font-weight:600;color:var(--sea);min-height:44px;display:flex;align-items:center}
+pre{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px;overflow-x:auto;font-family:var(--f-mono);font-size:.82rem;line-height:1.55;margin:10px 0 0}
+.book{margin:34px 0 0}
+.book h2,.supply h2{font-size:1.5rem;margin-bottom:8px}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-top:12px}
+.slot{aspect-ratio:1;border:2px dashed var(--line);border-radius:14px;display:grid;place-items:center;grid-template-rows:auto 1fr auto;padding:8px;background:var(--paper);position:relative}
+.slot-id{font-family:var(--f-mono);font-size:.7rem;color:var(--ink2)}
+.slot-emoji{font-size:1.5rem;filter:grayscale(1);opacity:.35}
+.slot-mark{font-family:var(--f-display);font-size:.8rem;color:var(--stamp);opacity:0;transform:rotate(-12deg)}
+.slot.on{border:2px solid var(--stamp);background:color-mix(in srgb,var(--stamp) 6%,var(--paper))}
+.slot.on .slot-emoji{filter:none;opacity:1} .slot.on .slot-mark{opacity:1}
+.slot.side-slot.on{border-color:var(--gold)} .slot.side-slot .slot-mark{color:var(--gold)}
+.book .actions{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.book .hint{color:var(--ink2);font-size:.9rem}
+.book h3,.book h4{margin-top:16px;font-size:1rem;color:var(--ink2)}
+.supply{margin:34px 0 60px}
+.supply-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:12px}
+@media (min-width:861px){.supply>.supply-grid{grid-template-columns:1fr 2fr}}
+.res-cat h4{font-size:1rem;margin-bottom:6px}
+.res-cat ul{margin:0;padding-left:18px;font-size:.92rem}
+.res-cat li{margin:3px 0}
+.res-cat a,footer a{display:inline-flex;align-items:center;min-height:44px}
+.faq details{border-top:1px solid var(--line);padding:8px 0}
+.faq summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+.faq p{margin:6px 0 0;color:var(--ink2);font-size:.92rem}
+table.sched{border-collapse:collapse;width:100%;font-size:.9rem;margin-top:10px}
+table.sched th,table.sched td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+table.sched tr.mid td{background:var(--gold2)}
+.supply-grid .wide{grid-column:1 / -1}
+table.sched th{font-family:var(--f-mono);font-size:.75rem;letter-spacing:.08em;color:var(--ink2);white-space:nowrap}
+.tablewrap{overflow-x:auto}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink2);font-size:.85rem}
+footer .wrap{display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;opacity:0;transition:all .25s;z-index:50;max-width:90vw;box-shadow:var(--shadow);font-weight:600}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.bad{background:var(--stamp);color:#fff}
+.modal{position:fixed;inset:0;background:rgba(10,25,30,.55);display:none;place-items:center;z-index:40;padding:20px}
+.modal.open{display:grid}
+.modal .box{background:var(--paper);color:var(--ink);border-radius:18px;max-width:720px;width:100%;max-height:90vh;overflow:auto;padding:26px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.modal .close{float:right}
+.cert{border:10px double var(--gold);padding:32px;text-align:center;background:var(--paper)}
+.cert h2{font-size:2rem;letter-spacing:.2em}
+.cert .name{font-family:var(--f-display);font-size:2.2rem;margin:14px 0 6px;border-bottom:2px solid var(--ink);display:inline-block;padding:0 24px}
+.cert p{margin:6px 0;color:var(--ink2)}
+.cert .seal{width:110px;height:110px;border-radius:50%;border:3px double var(--stamp);color:var(--stamp);display:inline-grid;place-items:center;font-family:var(--f-display);font-weight:700;transform:rotate(-10deg);margin-top:12px;font-size:1.1rem}
+.cert .series-badge{display:inline-block;margin-top:10px;padding:4px 14px;border-radius:999px;border:2px solid var(--gold);background:var(--gold2);color:var(--ink);font-weight:700}
+.cert .sign{display:flex;justify-content:space-between;margin-top:26px;font-size:.9rem}
+.quiz .q{border:0;border-top:1px solid var(--line);margin:0;padding:10px 0}
+.quiz .q legend{width:100%;margin:0 0 6px;padding:0;font-weight:600}
+.quiz label{display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 0;cursor:pointer}
+.quiz label input{flex:0 0 auto}
+.quiz .res{margin-top:12px;font-weight:700;font-family:var(--f-display);font-size:1.2rem}
+canvas.confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
+@media (max-width:860px){.hero{grid-template-columns:1fr}.top{position:static}.top .wrap{height:auto;padding:10px 20px;flex-wrap:wrap}main#top,.map,.island,.book,.supply{scroll-margin-top:16px}.chart .isl-label{font-size:36px}.chart .isl-sub{display:none}.chart .flag{font-size:42px}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+@media print{body{background:#fff}.top,.hero,.map,.island,.book,.supply,footer,.toast{display:none!important}.modal.open{position:static;display:block;background:none;padding:0}.modal .close{display:none}.cert{border-color:#B8860B}}
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#top">跳到主要內容</a>
+<canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#top">統計冒險之旅<small>2026</small></a>
+  <nav class="nav" aria-label="頁面導覽"><a href="#map">登山路線圖</a><a href="#island-1">三峰關卡</a><a href="#side">支線</a><a href="#book">集章冊</a><a href="#supply">補給站</a></nav>
+</div></header>
+
+<main class="wrap" id="top" tabindex="-1">
+  <div class="series"><span>資料冒險之旅 系列</span><a class="pill" href="https://johnnychao.github.io/python-quest-2026/" target="_blank" rel="noopener">第一部 · Python 冒險之旅（六島篇）↗</a><span class="pill now">第二部 · 統計冒險之旅（三峰篇）</span></div>
+  <section class="hero">
+    <div>
+      <h1>六座島之後，勇者登上三座山。把<em>統計</em>變成機器學習的登山裝備。</h1>
+      <p class="lead">這是「數據分析暨機器學習應用班 · 機器學習的統計基礎」的闖關入口，也是第一部「Python 冒險之旅」的續集。三座山峰、13 個章、3 條支線：每一關都是一本 Google Colab 筆記本，做任務、自動檢查，拿到專屬的<b>通關密語</b>回來蓋章、累積 XP、升級稱號。上一部的勇者可以在右邊<b>繼承存檔</b>。</p>
+      <div class="meta"><span class="chip">📅 9/21・9/24・10/5</span><span class="chip">⏱ 3 天 24 小時</span><span class="chip">☕ 勇者咖啡回歸</span><span class="chip">🧑‍🏫 恩恩統計家教</span></div>
+      <div class="today" id="today"></div>
+    </div>
+    <aside class="card adv" aria-label="勇者證">
+      <h2>Adventurer · 勇者證</h2>
+      <form class="who" id="nickForm"><label for="nick">冒險暱稱（須與第一部及 Notebook 相同）</label><input id="nick" placeholder="例如：統計勇者" maxlength="20" required><button class="btn btn-sea" type="submit">登錄</button></form>
+      <p class="hint">請用不含姓名、學號或電話的暱稱。本頁的暱稱與進度只儲存在這台電腦的瀏覽器；在 Notebook 輸入的暱稱與執行內容則由 Google Colab 處理。公用電腦課後請清除紀錄。</p>
+      <div class="rank"><span class="title" id="rankTitle">山腳見習生</span><span class="xp" id="xpNum">0 / 1850 XP</span></div>
+      <div class="bar" id="xpProgress" role="progressbar" aria-label="XP 進度" aria-valuemin="0" aria-valuemax="1850" aria-valuenow="0" aria-valuetext="0 / 1850 XP"><i id="xpBar"></i></div>
+      <div class="stats"><span>⭐ <span id="nextTitle"></span></span></div>
+      <div class="stats"><span>集章 <b id="stampCount">0</b> / 13</span><span>山峰徽章 <b id="islandCount">0</b> / 3</span><span>支線 <b id="sideCount">0</b> / 3</span><span>系列總 XP <b id="seriesXp">0</b></span></div>
+      <div class="badges" aria-label="徽章"><span class="badge" data-day="1" title="第 1 峰 統計之丘">🌄</span><span class="badge" data-day="2" title="第 2 峰 模型之嶺">⛰️</span><span class="badge" data-day="3" title="第 3 峰 預測之巔">🗻</span><span class="badge legacy" id="legacyBadge">🏝️ 第一部：未繼承</span><span class="badge legacy" id="seriesBadge">👑 雙傳說</span></div>
+      <div class="legacy">
+        <h3>💾 存檔繼承（第一部的勇者）</h3>
+        <p>貼上你在「Python 冒險之旅」拿到的任一通關密語（FINAL 的最好），就能把第一部的成就帶過來。</p>
+        <form id="legacyForm"><label for="legacyCode">第一部通關密語</label><input id="legacyCode" placeholder="PYQ-FINAL-XXXXXX" maxlength="24" spellcheck="false"><button class="btn btn-sea" type="submit">繼承</button></form>
+        <div class="done" id="legacyDone" style="display:none"><span id="legacyText"></span></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="map" id="map">
+    <h2>🧭 登山路線圖</h2>
+    <p class="sub">點山峰可以跳到那一峰的關卡。每登頂一座山，山頂就會插上旗子。</p>
+    <svg class="chart" id="chart" role="img" aria-label="三峰登山路線圖"></svg>
+  </section>
+
+
+    <section class="island" id="island-1" style="--island: #2B8A3E">
+      <header class="island-head">
+        <div class="island-title">
+          <span class="island-day">Day 1 · 09/21（一）</span>
+          <h3><span aria-hidden="true">🌄</span> 第一峰 · 統計之丘</h3>
+          <p class="island-theme">看懂資料：敘述統計、分布、抽樣與檢定</p>
+          <p class="island-ch">🧭 主軸比喻：量體溫：看懂一群人的狀態　｜　敘述統計與資料的長相 ・ 機率與分布、z 分數 ・ 抽樣、中央極限定理、信賴區間 ・ 假設檢定入門 ・ Boss：A/B 測試</p>
+        </div>
+        <div class="island-progress" data-day="1"><span class="ring"><svg viewBox="0 0 36 36"><circle class="ring-bg" cx="18" cy="18" r="15.9"/><circle class="ring-fg" cx="18" cy="18" r="15.9"/></svg><b class="ring-num">0/5</b></span><span class="island-badge">🏅 山峰徽章</span></div>
+      </header>
+      <div class="levels">
+      <article class="lv kind-intro" data-id="L00" id="lv-L00">
+        <div class="lv-head"><span class="lv-id">L00</span><span class="lv-kind">補給站</span><span class="lv-xp">50 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">🎒</span>補給站：統計工具箱</h4>
+        <p class="lv-book">📖 資料：勇者咖啡八月銷售</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>匯入 pandas／NumPy／SciPy／seaborn／scikit-learn，確認版本</li><li>載入勇者咖啡八月銷售資料、看懂欄位</li><li>固定亂數種子、取得通關密語</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L00_toolbox.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="L00" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="L00 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article>
+      <article class="lv kind-level" data-id="L01" id="lv-L01">
+        <div class="lv-head"><span class="lv-id">L01</span><span class="lv-kind">關卡</span><span class="lv-xp">100 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">📊</span>看懂資料的長相</h4>
+        <p class="lv-book">📖 ISLP Ch2 觀念；資料：勇者咖啡八月銷售</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>平均、中位數、標準差、四分位數與 describe()</li><li>直方圖、盒鬚圖、偏態與離群值（IQR 規則）</li><li>groupby 分組摘要</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L01_describe.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="L01" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="L01 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article>
+      <article class="lv kind-level" data-id="L02" id="lv-L02">
+        <div class="lv-head"><span class="lv-id">L02</span><span class="lv-kind">關卡</span><span class="lv-xp">100 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">🎲</span>機率與分布</h4>
+        <p class="lv-book">📖 ISLP Ch2 觀念；資料：勇者咖啡八月銷售</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>機率＝長期頻率：用模擬算機率</li><li>常態分布、68–95–99.7 與 z 分數（標準化）</li><li>二項分布：幾個客人會買甜點</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L02_distributions.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="L02" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="L02 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article>
+      <article class="lv kind-level" data-id="L03" id="lv-L03">
+        <div class="lv-head"><span class="lv-id">L03</span><span class="lv-kind">關卡</span><span class="lv-xp">100 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">🔬</span>抽樣與檢定</h4>
+        <p class="lv-book">📖 ISLP Ch5.2 bootstrap、Ch13 前言；資料：勇者咖啡八月銷售</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>抽樣分布、中央極限定理、標準誤</li><li>信賴區間：公式版與 bootstrap 版</li><li>p 值的直覺（置換檢定）、t 檢定、卡方檢定</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L03_sampling_tests.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="L03" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="L03 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article>
+      <article class="lv kind-boss" data-id="B1" id="lv-B1">
+        <div class="lv-head"><span class="lv-id">B1</span><span class="lv-kind">Boss 戰</span><span class="lv-xp">200 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">⚔️</span>Boss 戰：勇者咖啡 A/B 測試</h4>
+        <p class="lv-book">📖 Day 1 綜合；資料：新舊菜單 A/B 測試</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>兩組比較的完整流程：敘述 → 視覺化 → 檢定 → 信賴區間 → 給老闆的結論</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/B1_boss_ab_test.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="B1" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="B1 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article></div>
+      <details class="cheat"><summary>📝 第一峰小抄</summary>
+<pre><code>import pandas as pd, numpy as np
+from scipy import stats
+import seaborn as sns, matplotlib.pyplot as plt
+df = pd.read_csv(url)
+df["金額"].mean()  .median()  .mode()[0]  .std()  .quantile(0.25)  .describe()
+df.groupby("分店")["金額"].agg(["count", "mean", "median", "std"])
+sns.histplot(df["金額"], bins=30);  sns.boxplot(data=df, x="分店", y="金額")
+上界 = Q3 + 1.5 * (Q3 - Q1)                       # IQR 規則抓離群值
+rng = np.random.default_rng(42); rng.integers(1, 7, size=100)
+stats.norm.cdf(x, mu, sigma)  stats.norm.ppf(0.95, mu, sigma)   # 常態：小於 x 的機率／反查
+stats.binom.pmf(k, n, p)  stats.binom.cdf(k, n, p)               # 二項分布
+z = (x - mean) / std                                           # z 分數
+樣本 = df["金額"].sample(30, random_state=42)
+[rng.choice(s.values, len(s), replace=True).mean() for _ in range(1000)]   # bootstrap
+np.percentile(lst, [2.5, 97.5])
+stats.ttest_ind(a, b, equal_var=False)                         # t 檢定 → (t, p)
+stats.chi2_contingency(pd.crosstab(x, y))                      # 卡方檢定 → (卡方, p, 自由度, 期望)</code></pre></details>
+    </section>
+    <section class="island" id="island-2" style="--island: #D9480F">
+      <header class="island-head">
+        <div class="island-title">
+          <span class="island-day">Day 2 · 09/24（四）</span>
+          <h3><span aria-hidden="true">⛰️</span> 第二峰 · 模型之嶺</h3>
+          <p class="island-theme">建立模型：迴歸、過度擬合、分類與評估</p>
+          <p class="island-ch">🧭 主軸比喻：考古題 vs 正式考試　｜　機器學習是什麼 ・ 線性迴歸與多元迴歸 ・ 過度擬合與偏差－變異 ・ 分類、混淆矩陣、ROC／AUC ・ Boss：心臟病風險預警</p>
+        </div>
+        <div class="island-progress" data-day="2"><span class="ring"><svg viewBox="0 0 36 36"><circle class="ring-bg" cx="18" cy="18" r="15.9"/><circle class="ring-fg" cx="18" cy="18" r="15.9"/></svg><b class="ring-num">0/4</b></span><span class="island-badge">🏅 山峰徽章</span></div>
+      </header>
+      <div class="levels">
+      <article class="lv kind-level" data-id="L04" id="lv-L04">
+        <div class="lv-head"><span class="lv-id">L04</span><span class="lv-kind">關卡</span><span class="lv-xp">100 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">📈</span>線性迴歸</h4>
+        <p class="lv-book">📖 ISLP Ch3；資料：Advertising（模擬）、勇者咖啡每日營收</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>相關係數與散佈圖；最小平方法</li><li>LinearRegression：係數怎麼讀、R² 與 RMSE</li><li>多元迴歸、one-hot 編碼、statsmodels 看 p 值</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L04_linear_regression.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="L04" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="L04 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article>
+      <article class="lv kind-level" data-id="L05" id="lv-L05">
+        <div class="lv-head"><span class="lv-id">L05</span><span class="lv-kind">關卡</span><span class="lv-xp">100 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">🎯</span>過度擬合與偏差－變異</h4>
+        <p class="lv-book">📖 ISLP Ch2、Ch7 前段；資料：模擬資料</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>train_test_split：考古題 vs 正式考試</li><li>多項式次數實驗畫出 U 型曲線</li><li>KNN 的 K 與 StandardScaler</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L05_overfitting.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="L05" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="L05 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article>
+      <article class="lv kind-level" data-id="L06" id="lv-L06">
+        <div class="lv-head"><span class="lv-id">L06</span><span class="lv-kind">關卡</span><span class="lv-xp">100 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">🚦</span>分類與評估</h4>
+        <p class="lv-book">📖 ISLP Ch4；資料：信用卡違約（固定 seed 合成）</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>LogisticRegression、predict_proba 與門檻</li><li>混淆矩陣、精確率、召回率、F1</li><li>ROC 曲線與 AUC；KNN 分類器比較</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L06_classification.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="L06" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="L06 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article>
+      <article class="lv kind-boss" data-id="B2" id="lv-B2">
+        <div class="lv-head"><span class="lv-id">B2</span><span class="lv-kind">Boss 戰</span><span class="lv-xp">200 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">⚔️</span>Boss 戰：心臟病風險預警</h4>
+        <p class="lv-book">📖 Day 2 綜合；資料：勇者健檢中心（教學用合成資料）</p>
+        <p class="hint">只練習分類與門檻取捨，不作醫療診斷、個人風險判定或臨床效能宣稱。</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>健檢資料：缺值處理 → 編碼 → 邏輯斯迴歸 → 評估 → 門檻取捨 → 給醫師的一頁摘要</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/B2_boss_heart.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="B2" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="B2 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article></div>
+      <details class="cheat"><summary>📝 第二峰小抄</summary>
+<pre><code>from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.neighbors import KNeighborsRegressor, KNeighborsClassifier
+from sklearn.metrics import mean_squared_error, r2_score, confusion_matrix, classification_report, roc_auc_score, roc_curve
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+model = LinearRegression().fit(X_train, y_train); model.coef_, model.intercept_
+pred = model.predict(X_test); r2_score(y_test, pred); np.sqrt(mean_squared_error(y_test, pred))
+X = pd.get_dummies(df[cols], drop_first=True)                 # 類別變數 one-hot
+import statsmodels.formula.api as smf
+smf.ols("Sales ~ TV + Radio + Newspaper", data=df).fit().summary()
+clf = LogisticRegression(max_iter=1000).fit(X_train, y_train)
+prob = clf.predict_proba(X_test)[:, 1]; pred = (prob >= 0.5).astype(int)
+confusion_matrix(y_test, pred); print(classification_report(y_test, pred))
+roc_auc_score(y_test, prob); fpr, tpr, thr = roc_curve(y_test, prob)
+scaler = StandardScaler().fit(X_train); scaler.transform(X_test)   # 只用訓練集 fit</code></pre></details>
+    </section>
+    <section class="island" id="island-3" style="--island: #5F3DC4">
+      <header class="island-head">
+        <div class="island-title">
+          <span class="island-day">Day 3 · 10/05（一）</span>
+          <h3><span aria-hidden="true">🗻</span> 第三峰 · 預測之巔</h3>
+          <p class="island-theme">讓模型可靠：交叉驗證、集成、正規化、非監督初探；最終專題</p>
+          <p class="island-ch">🧭 主軸比喻：模擬考輪流當考官　｜　交叉驗證與隨機森林 ・ 正規化與調參 ・ PCA 與 K-means ・ 最終 Boss：兩份預測報告</p>
+        </div>
+        <div class="island-progress" data-day="3"><span class="ring"><svg viewBox="0 0 36 36"><circle class="ring-bg" cx="18" cy="18" r="15.9"/><circle class="ring-fg" cx="18" cy="18" r="15.9"/></svg><b class="ring-num">0/4</b></span><span class="island-badge">🏅 山峰徽章</span></div>
+      </header>
+      <div class="levels">
+      <article class="lv kind-level" data-id="L07" id="lv-L07">
+        <div class="lv-head"><span class="lv-id">L07</span><span class="lv-kind">關卡</span><span class="lv-xp">100 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">🔁</span>交叉驗證與隨機森林</h4>
+        <p class="lv-book">📖 ISLP Ch5、Ch8；資料：勇者咖啡會員</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>k-fold 交叉驗證、三份切分、Pipeline 防資料洩漏</li><li>bootstrap → bagging → 隨機森林</li><li>決策樹直覺與特徵重要性</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L07_cv_forest.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="L07" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="L07 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article>
+      <article class="lv kind-level" data-id="L08" id="lv-L08">
+        <div class="lv-head"><span class="lv-id">L08</span><span class="lv-kind">關卡</span><span class="lv-xp">100 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">🧲</span>正規化與調參</h4>
+        <p class="lv-book">📖 ISLP Ch6；資料：勇者咖啡每日營收、會員</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>Ridge／Lasso：alpha 與係數縮減</li><li>GridSearchCV 用交叉驗證選超參數</li><li>max_depth 的過擬合與簡單優先原則</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L08_regularization.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="L08" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="L08 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article>
+      <article class="lv kind-level" data-id="L09" id="lv-L09">
+        <div class="lv-head"><span class="lv-id">L09</span><span class="lv-kind">關卡</span><span class="lv-xp">100 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">🧭</span>沒有標準答案的學習：PCA 與 K-means</h4>
+        <p class="lv-book">📖 ISLP Ch12；資料：勇者咖啡會員</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>標準化後做 PCA、解釋變異比例與雙標圖</li><li>K-means 分群、肘部法選 K</li><li>幫每一群取名字</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L09_pca_kmeans.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="L09" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="L09 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article>
+      <article class="lv kind-final" data-id="FINAL" id="lv-FINAL">
+        <div class="lv-head"><span class="lv-id">FINAL</span><span class="lv-kind">最終 Boss</span><span class="lv-xp">500 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">👑</span>最終 Boss：勇者咖啡 2.0 兩份預測報告</h4>
+        <p class="lv-book">📖 全課綜合；資料：勇者咖啡每日營收、會員（公開挑戰資料不含答案）</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>迴歸篇：預測每日營收；分類篇：預測會員回購</li><li>切分 → 基線 → 交叉驗證 → 調參 → 輸出預測檔 → 教師離線驗收 → 給老闆的兩份結論</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/FINAL_boss_coffee2.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="FINAL" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="FINAL 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article></div>
+      <details class="cheat"><summary>📝 第三峰小抄</summary>
+<pre><code>from sklearn.model_selection import cross_val_score, KFold, GridSearchCV
+from sklearn.pipeline import make_pipeline
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import Ridge, Lasso
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+cross_val_score(model, X, y, cv=5, scoring="roc_auc").mean()
+pipe = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))   # 防資料洩漏
+rf = RandomForestClassifier(n_estimators=300, random_state=42).fit(X_train, y_train)
+pd.Series(rf.feature_importances_, index=X.columns).sort_values(ascending=False)
+Ridge(alpha=1.0)  Lasso(alpha=0.1)                             # alpha 越大，係數綁越緊
+gs = GridSearchCV(rf, {"max_depth": [3, 5, 8, None]}, cv=5, scoring="roc_auc").fit(X, y)
+gs.best_params_, gs.best_score_
+Z = StandardScaler().fit_transform(X)
+pca = PCA(n_components=2).fit(Z); pca.explained_variance_ratio_; pca.transform(Z)
+km = KMeans(n_clusters=4, n_init=10, random_state=42).fit(Z); km.labels_; km.inertia_</code></pre></details>
+    </section>
+
+    <section class="island side" id="side" style="--island: #8A6D3B">
+      <header class="island-head">
+        <div class="island-title">
+          <span class="island-day">選修 · 隨時可做</span>
+          <h3><span aria-hidden="true">🧗</span> 支線任務</h3>
+          <p class="island-theme">不影響主線完成紀錄，但每條支線都有 100 額外 XP。S1 由教師另行確認分享；S2、S3 在 Colab 自動檢查。</p>
+        </div>
+      </header>
+      <div class="levels">
+      <article class="lv kind-side" data-id="S1" id="lv-S1">
+        <div class="lv-head"><span class="lv-id">S1</span><span class="lv-kind">支線</span> <span class="lv-manual" title="由教師另行確認分享">教師確認</span><span class="lv-xp">100 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">🧗</span>支線：帶安全資料上山</h4>
+        <p class="lv-book">📖 中場任務（教師確認）</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>使用課程合成或明確公開授權資料做一次迴歸或分類</li><li>切分、基線、評估、一句結論</li><li>Day 3 開場分享，由教師另行紀錄</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/S1_side_own_data.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="S1" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="S1 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article>
+      <article class="lv kind-side" data-id="S2" id="lv-S2">
+        <div class="lv-head"><span class="lv-id">S2</span><span class="lv-kind">支線</span><span class="lv-xp">100 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">🪙</span>支線：一千枚硬幣的陷阱（多重檢定）</h4>
+        <p class="lv-book">📖 ISLP Ch13</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>模擬 1000 次檢定看假發現</li><li>Bonferroni 與 Benjamini–Hochberg</li><li>什麼是 p-hacking</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/S2_side_multiple_testing.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="S2" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="S2 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article>
+      <article class="lv kind-side" data-id="S3" id="lv-S3">
+        <div class="lv-head"><span class="lv-id">S3</span><span class="lv-kind">支線</span><span class="lv-xp">100 XP</span></div>
+        <h4 class="lv-name"><span class="lv-emoji" aria-hidden="true">⛷️</span>支線：模型是怎麼學的（手刻梯度下降）</h4>
+        <p class="lv-book">📖 補充</p>
+        <details class="lv-goals"><summary>這一關學什麼</summary><ul><li>損失曲面與下山</li><li>五行程式的梯度下降</li><li>學習率太大／太小會怎樣</li></ul></details>
+        <div class="lv-actions">
+          <a class="btn btn-colab" href="https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/S3_side_gradient_descent.ipynb" target="_blank" rel="noopener">在 Colab 開啟 ↗</a>
+          <form class="stamp-form" data-id="S3" autocomplete="off">
+            <input type="text" name="code" placeholder="通關密語" aria-label="S3 通關密語" maxlength="24" spellcheck="false">
+            <button type="submit" class="btn btn-stamp">蓋章</button>
+          </form>
+        </div>
+        <div class="stamp" aria-hidden="true"><span class="stamp-txt">通關</span><span class="stamp-date"></span></div>
+      </article></div>
+    </section>
+
+  <section class="book card" id="book">
+    <h2>📖 集章冊</h2>
+    <p class="hint">密語與暱稱規則只用來重建這台電腦的自我學習紀錄，不是身分、成績或教師驗收證明。蓋滿主線 13 個章可預覽學習完成紀錄；S1 分享與 FINAL 皆由教師另行確認。</p>
+    <div class="slots"><div class="slot" data-id="L00"><span class="slot-id">L00</span><span class="slot-emoji">🎒</span><span class="slot-mark" aria-hidden="true">通關</span></div><div class="slot" data-id="L01"><span class="slot-id">L01</span><span class="slot-emoji">📊</span><span class="slot-mark" aria-hidden="true">通關</span></div><div class="slot" data-id="L02"><span class="slot-id">L02</span><span class="slot-emoji">🎲</span><span class="slot-mark" aria-hidden="true">通關</span></div><div class="slot" data-id="L03"><span class="slot-id">L03</span><span class="slot-emoji">🔬</span><span class="slot-mark" aria-hidden="true">通關</span></div><div class="slot" data-id="B1"><span class="slot-id">B1</span><span class="slot-emoji">⚔️</span><span class="slot-mark" aria-hidden="true">通關</span></div><div class="slot" data-id="L04"><span class="slot-id">L04</span><span class="slot-emoji">📈</span><span class="slot-mark" aria-hidden="true">通關</span></div><div class="slot" data-id="L05"><span class="slot-id">L05</span><span class="slot-emoji">🎯</span><span class="slot-mark" aria-hidden="true">通關</span></div><div class="slot" data-id="L06"><span class="slot-id">L06</span><span class="slot-emoji">🚦</span><span class="slot-mark" aria-hidden="true">通關</span></div><div class="slot" data-id="B2"><span class="slot-id">B2</span><span class="slot-emoji">⚔️</span><span class="slot-mark" aria-hidden="true">通關</span></div><div class="slot" data-id="L07"><span class="slot-id">L07</span><span class="slot-emoji">🔁</span><span class="slot-mark" aria-hidden="true">通關</span></div><div class="slot" data-id="L08"><span class="slot-id">L08</span><span class="slot-emoji">🧲</span><span class="slot-mark" aria-hidden="true">通關</span></div><div class="slot" data-id="L09"><span class="slot-id">L09</span><span class="slot-emoji">🧭</span><span class="slot-mark" aria-hidden="true">通關</span></div><div class="slot" data-id="FINAL"><span class="slot-id">FINAL</span><span class="slot-emoji">👑</span><span class="slot-mark" aria-hidden="true">通關</span></div></div>
+    <h3>支線成就</h3>
+    <div class="slots"><div class="slot side-slot" data-id="S1"><span class="slot-id">S1</span><span class="slot-emoji">🧗</span><span class="slot-mark" aria-hidden="true">完成</span></div><div class="slot side-slot" data-id="S2"><span class="slot-id">S2</span><span class="slot-emoji">🪙</span><span class="slot-mark" aria-hidden="true">完成</span></div><div class="slot side-slot" data-id="S3"><span class="slot-id">S3</span><span class="slot-emoji">⛷️</span><span class="slot-mark" aria-hidden="true">完成</span></div></div>
+    <div class="actions"><button class="btn btn-sea" id="certBtn" disabled>🎓 預覽學習完成紀錄</button><span class="hint" id="certHint"></span><button class="btn" id="resetBtn" style="margin-left:auto">清除這台電腦的進度</button></div>
+  </section>
+
+  <section class="supply" id="supply">
+    <h2>⛽ 補給站</h2>
+    <div class="supply-grid">
+      <div class="card">
+        <h3>🧭 暖身自我檢查</h3>
+        <p style="color:var(--ink2);font-size:.92rem;margin:6px 0 10px">8 題、約 3 分鐘，不計分，只用來喚醒統計直覺；這組題目與紙本的 6 分鐘前後測不同，不納入前後測比較、成績或驗收。</p>
+        <button class="btn btn-sea" id="quizBtn">開始暖身</button>
+      </div>
+      <div class="card faq">
+        <h3>🛟 統計急救箱</h3>
+        <details><summary>我的數字和檢查器差一點點？</summary><p>檢查允許小誤差，但抽樣、切分、模型都要照題目用 <code>random_state=42</code>（或 <code>np.random.default_rng(42)</code>），否則亂數不同、答案就不同。</p></details>
+        <details><summary>ModuleNotFoundError: No module named 'xxx'</summary><p>Colab 已預裝 pandas、numpy、scipy、seaborn、scikit-learn、statsmodels；出現這個訊息通常是拼錯或大小寫（例如 <code>sklearn</code> 不是 <code>scikit_learn</code>）。</p></details>
+        <details><summary>找不到變數（我找不到變數 xxx）</summary><p>任務會指定答案要存進哪個變數名稱（例如 <code>平均</code>）。名稱要一模一樣，而且要在任務那一格裡指定。</p></details>
+        <details><summary>密語對不上？</summary><p>筆記本「暱稱」欄要和這裡登錄的一樣（大小寫與空白不影響）。改完暱稱要重新執行魔法工具箱與通關密語那一格。這一部的密語是 SQ- 開頭，第一部的 PYQ- 只用在「存檔繼承」。</p></details>
+        <details><summary>圖表的中文變成方框？</summary><p>先執行該筆記本的「中文字型設定」格，再重新畫一次。</p></details>
+        <details><summary>執行階段重新啟動了？</summary><p>上面每一格都要重跑一次（包含魔法工具箱），或用「執行階段 → 全部執行」，再執行 <code>全部檢查()</code>。</p></details>
+      </div>
+      <div class="card wide">
+        <h3>🗓 三天登山行程</h3>
+        <div class="tablewrap"><table class="sched"><thead><tr><th>天</th><th>日期</th><th>山峰</th><th>主題</th><th>關卡</th></tr></thead><tbody><tr><td>Day 1</td><td>09/21（一）</td><td>🌄 統計之丘</td><td>看懂資料：敘述統計、分布、抽樣與檢定；紙本先介紹 S2，課外可完成</td><td>L00、L01、L02、L03、S2、B1</td></tr><tr><td>Day 2</td><td>09/24（四）</td><td>⛰️ 模型之嶺</td><td>建立模型：迴歸、過度擬合、分類與評估</td><td>L04、L05、L06、B2</td></tr><tr class="mid"><td>中場</td><td>09/25–10/04</td><td>🧗 中場任務</td><td>完成未通關關卡；支線 S1 帶安全資料上山（Day 3 開場分享）；S2 如未完成可補做</td><td>S1、S2（補做）</td></tr><tr><td>Day 3</td><td>10/05（一）</td><td>🗻 預測之巔</td><td>讓模型可靠：交叉驗證、集成、正規化、非監督初探；最終專題</td><td>L07、L08、L09、FINAL</td></tr></tbody></table></div>
+      </div>
+      <div class="card wide">
+        <h3>☕ 勇者咖啡資料宇宙</h3>
+        <p style="color:var(--ink2);font-size:.92rem;margin:6px 0 0">公開包共有 12 份固定種子合成 CSV：4 份勇者咖啡資料、1 份健檢情境資料、5 份結構參考資料，以及 2 份移除答案的 FINAL 挑戰資料。下表列出 7 份主線直接使用的資料；產生器、seed、欄位與雜湊詳見 <code>data/SYNTHETIC_DATA_PROVENANCE.json</code>。</p>
+        <div class="tablewrap"><table class="sched"><thead><tr><th>檔案</th><th>名稱</th><th>內容</th><th>用在</th></tr></thead><tbody><tr><td><code>coffee_sales_aug.csv</code></td><td>勇者咖啡八月銷售</td><td>八月三家分店的每一筆訂單（含時段、天氣、會員編號）</td><td>L00–L03</td></tr><tr><td><code>coffee_ab_test.csv</code></td><td>新舊菜單 A/B 測試</td><td>信義店八月最後兩週，新舊菜單各 120 筆客單價與加購紀錄</td><td>B1</td></tr><tr><td><code>advertising.csv</code></td><td>Advertising（模擬）</td><td>200 個市場的電視／廣播／報紙廣告預算與銷售量（依 ISLP Advertising 結構模擬）</td><td>L04、L05</td></tr><tr><td><code>default.csv</code></td><td>信用卡違約（合成）</td><td>10,000 位信用卡客戶：是否違約、是否學生、餘額、收入（固定 seed 20260904 合成資料）</td><td>L06</td></tr><tr><td><code>heart_check.csv</code></td><td>勇者健檢中心（教學用合成資料）</td><td>400 位受檢者的健檢數值與是否有心臟病</td><td>B2</td></tr><tr><td><code>coffee_daily.csv</code></td><td>勇者咖啡每日營收</td><td>三家分店 3/1–8/31 每日營收與當天條件（星期、天氣、氣溫、假日、促銷、上週同日營收）</td><td>L04、L08、FINAL</td></tr><tr><td><code>coffee_members.csv</code></td><td>勇者咖啡會員</td><td>2,000 位會員的來店紀錄與 30 天內是否回購</td><td>L07–L09、FINAL</td></tr></tbody></table></div>
+      </div>
+      <div class="card wide"><h3>🔗 自學地圖</h3><div class="supply-grid" style="margin-top:8px"><div class="res-cat"><h4>免費教科書與教學</h4><ul><li><a href="https://www.statlearning.com/" target="_blank" rel="noopener">ISLP：An Introduction to Statistical Learning（免費 PDF） ↗</a></li><li><a href="https://scikit-learn.org/stable/getting_started.html" target="_blank" rel="noopener">scikit-learn 官方教學（Getting Started） ↗</a></li><li><a href="https://docs.scipy.org/doc/scipy/reference/stats.html" target="_blank" rel="noopener">SciPy 統計函式（scipy.stats） ↗</a></li><li><a href="https://pandas.pydata.org/docs/user_guide/index.html" target="_blank" rel="noopener">pandas 官方使用指南 ↗</a></li></ul></div><div class="res-cat"><h4>看影片建立直覺</h4><ul><li><a href="https://www.youtube.com/@statquest" target="_blank" rel="noopener">StatQuest（統計與機器學習觀念影片） ↗</a></li><li><a href="https://seeing-theory.brown.edu/" target="_blank" rel="noopener">Seeing Theory：互動式統計視覺化 ↗</a></li><li><a href="https://www.youtube.com/watch?v=zeJD6dqJ5lo" target="_blank" rel="noopener">3Blue1Brown：中央極限定理 ↗</a></li></ul></div><div class="res-cat"><h4>資料哪裡找</h4><ul><li><a href="https://data.gov.tw/" target="_blank" rel="noopener">政府資料開放平臺 ↗</a></li><li><a href="https://statis.moi.gov.tw/" target="_blank" rel="noopener">內政部統計查詢網 ↗</a></li><li><a href="https://scikit-learn.org/stable/datasets/toy_dataset.html" target="_blank" rel="noopener">scikit-learn 內建資料集 ↗</a></li></ul></div><div class="res-cat"><h4>系列第一部</h4><ul><li><a href="https://johnnychao.github.io/python-quest-2026/" target="_blank" rel="noopener">Python 冒險之旅 2026（六島篇）入口網頁 ↗</a></li></ul></div></div></div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>統計冒險之旅 2026 · 數據分析暨機器學習應用班 · 機器學習的統計基礎（24 小時）</span><span>資料冒險之旅系列第二部 · 講師：恩恩統計家教 · <a href="https://github.com/johnnychao/stats-quest-2026" target="_blank" rel="noopener">GitHub</a></span></div></footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="modal" id="certModal" role="dialog" aria-modal="true" aria-labelledby="certModalTitle" aria-hidden="true"><div class="box">
+  <button class="btn close" data-close>關閉</button>
+  <div class="cert">
+    <p style="letter-spacing:.3em">LEARNING COMPLETION RECORD</p>
+    <h2 id="certModalTitle">學習完成紀錄</h2>
+    <div class="name" id="certName">勇者</div>
+    <p>稱號：<b id="certTitle"></b></p>
+    <p>已在本機完成「資料冒險之旅」第二部「統計冒險之旅 2026」三峰 13 關學習動線。</p>
+    <p><strong>本頁是學習進度紀錄，不是補習班正式結業證書。</strong><br>FINAL 預測檔須由教師離線驗收，再依課程流程確認正式結業。</p>
+    <div class="seal">三峰<br>登頂</div>
+    <div><span class="series-badge" id="certSeries" style="display:none">👑 系列徽章「雙傳說」：兩部全通關</span></div>
+    <div class="sign"><span>紀錄日期：<span id="certDate"></span></span><span>課程：機器學習的統計基礎</span></div>
+  </div>
+  <div style="margin-top:14px;display:flex;gap:10px"><button class="btn btn-sea" id="printCert">列印學習紀錄／存成 PDF</button></div>
+</div></div>
+<div class="modal" id="quizModal" role="dialog" aria-modal="true" aria-labelledby="quizModalTitle" aria-hidden="true"><div class="box quiz">
+  <button class="btn close" data-close>關閉</button><h3 id="quizModalTitle">🧭 暖身自我檢查</h3><div id="quizBody"></div>
+</div></div>
+
+<script>// 精簡版 SHA-256（純 JS，與 Python hashlib.sha256 結果一致）
+function sha256Hex(str) {
+  const K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  const bytes = new TextEncoder().encode(str);
+  const bitLen = bytes.length * 8;
+  const padLen = ((bytes.length + 9 + 63) >> 6) << 6;
+  const buf = new Uint8Array(padLen);
+  buf.set(bytes); buf[bytes.length] = 0x80;
+  const dv = new DataView(buf.buffer);
+  dv.setUint32(padLen - 8, Math.floor(bitLen / 0x100000000));
+  dv.setUint32(padLen - 4, bitLen >>> 0);
+  let H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  const W = new Uint32Array(64);
+  const rotr = (x, n) => (x >>> n) | (x << (32 - n));
+  for (let off = 0; off < padLen; off += 64) {
+    for (let i = 0; i < 16; i++) W[i] = dv.getUint32(off + i * 4);
+    for (let i = 16; i < 64; i++) {
+      const s0 = rotr(W[i-15], 7) ^ rotr(W[i-15], 18) ^ (W[i-15] >>> 3);
+      const s1 = rotr(W[i-2], 17) ^ rotr(W[i-2], 19) ^ (W[i-2] >>> 10);
+      W[i] = (W[i-16] + s0 + W[i-7] + s1) >>> 0;
+    }
+    let [a,b,c,d,e,f,g,h] = H;
+    for (let i = 0; i < 64; i++) {
+      const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
+      const ch = (e & f) ^ (~e & g);
+      const t1 = (h + S1 + ch + K[i] + W[i]) >>> 0;
+      const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
+      const maj = (a & b) ^ (a & c) ^ (b & c);
+      const t2 = (S0 + maj) >>> 0;
+      h = g; g = f; f = e; e = (d + t1) >>> 0; d = c; c = b; b = a; a = (t1 + t2) >>> 0;
+    }
+    H = [(H[0]+a)>>>0,(H[1]+b)>>>0,(H[2]+c)>>>0,(H[3]+d)>>>0,(H[4]+e)>>>0,(H[5]+f)>>>0,(H[6]+g)>>>0,(H[7]+h)>>>0];
+  }
+  return H.map(x => x.toString(16).padStart(8, '0')).join('');
+}
+</script>
+<script>
+const LEVELS = [{"id": "L00", "day": 1, "kind": "intro", "name": "補給站：統計工具箱", "xp": 50, "emoji": "🎒", "goals": ["匯入 pandas／NumPy／SciPy／seaborn／scikit-learn，確認版本", "載入勇者咖啡八月銷售資料、看懂欄位", "固定亂數種子、取得通關密語"], "book": "資料：勇者咖啡八月銷售", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L00_toolbox.ipynb", "manual": false}, {"id": "L01", "day": 1, "kind": "level", "name": "看懂資料的長相", "xp": 100, "emoji": "📊", "goals": ["平均、中位數、標準差、四分位數與 describe()", "直方圖、盒鬚圖、偏態與離群值（IQR 規則）", "groupby 分組摘要"], "book": "ISLP Ch2 觀念；資料：勇者咖啡八月銷售", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L01_describe.ipynb", "manual": false}, {"id": "L02", "day": 1, "kind": "level", "name": "機率與分布", "xp": 100, "emoji": "🎲", "goals": ["機率＝長期頻率：用模擬算機率", "常態分布、68–95–99.7 與 z 分數（標準化）", "二項分布：幾個客人會買甜點"], "book": "ISLP Ch2 觀念；資料：勇者咖啡八月銷售", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L02_distributions.ipynb", "manual": false}, {"id": "L03", "day": 1, "kind": "level", "name": "抽樣與檢定", "xp": 100, "emoji": "🔬", "goals": ["抽樣分布、中央極限定理、標準誤", "信賴區間：公式版與 bootstrap 版", "p 值的直覺（置換檢定）、t 檢定、卡方檢定"], "book": "ISLP Ch5.2 bootstrap、Ch13 前言；資料：勇者咖啡八月銷售", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L03_sampling_tests.ipynb", "manual": false}, {"id": "B1", "day": 1, "kind": "boss", "name": "Boss 戰：勇者咖啡 A/B 測試", "xp": 200, "emoji": "⚔️", "goals": ["兩組比較的完整流程：敘述 → 視覺化 → 檢定 → 信賴區間 → 給老闆的結論"], "book": "Day 1 綜合；資料：新舊菜單 A/B 測試", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/B1_boss_ab_test.ipynb", "manual": false}, {"id": "L04", "day": 2, "kind": "level", "name": "線性迴歸", "xp": 100, "emoji": "📈", "goals": ["相關係數與散佈圖；最小平方法", "LinearRegression：係數怎麼讀、R² 與 RMSE", "多元迴歸、one-hot 編碼、statsmodels 看 p 值"], "book": "ISLP Ch3；資料：Advertising（模擬）、勇者咖啡每日營收", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L04_linear_regression.ipynb", "manual": false}, {"id": "L05", "day": 2, "kind": "level", "name": "過度擬合與偏差－變異", "xp": 100, "emoji": "🎯", "goals": ["train_test_split：考古題 vs 正式考試", "多項式次數實驗畫出 U 型曲線", "KNN 的 K 與 StandardScaler"], "book": "ISLP Ch2、Ch7 前段；資料：模擬資料", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L05_overfitting.ipynb", "manual": false}, {"id": "L06", "day": 2, "kind": "level", "name": "分類與評估", "xp": 100, "emoji": "🚦", "goals": ["LogisticRegression、predict_proba 與門檻", "混淆矩陣、精確率、召回率、F1", "ROC 曲線與 AUC；KNN 分類器比較"], "book": "ISLP Ch4；資料：信用卡違約（固定 seed 合成）", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L06_classification.ipynb", "manual": false}, {"id": "B2", "day": 2, "kind": "boss", "name": "Boss 戰：心臟病風險預警", "xp": 200, "emoji": "⚔️", "goals": ["健檢資料：缺值處理 → 編碼 → 邏輯斯迴歸 → 評估 → 門檻取捨 → 給醫師的一頁摘要"], "book": "Day 2 綜合；資料：勇者健檢中心（教學用合成資料）", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/B2_boss_heart.ipynb", "manual": false}, {"id": "L07", "day": 3, "kind": "level", "name": "交叉驗證與隨機森林", "xp": 100, "emoji": "🔁", "goals": ["k-fold 交叉驗證、三份切分、Pipeline 防資料洩漏", "bootstrap → bagging → 隨機森林", "決策樹直覺與特徵重要性"], "book": "ISLP Ch5、Ch8；資料：勇者咖啡會員", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L07_cv_forest.ipynb", "manual": false}, {"id": "L08", "day": 3, "kind": "level", "name": "正規化與調參", "xp": 100, "emoji": "🧲", "goals": ["Ridge／Lasso：alpha 與係數縮減", "GridSearchCV 用交叉驗證選超參數", "max_depth 的過擬合與簡單優先原則"], "book": "ISLP Ch6；資料：勇者咖啡每日營收、會員", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L08_regularization.ipynb", "manual": false}, {"id": "L09", "day": 3, "kind": "level", "name": "沒有標準答案的學習：PCA 與 K-means", "xp": 100, "emoji": "🧭", "goals": ["標準化後做 PCA、解釋變異比例與雙標圖", "K-means 分群、肘部法選 K", "幫每一群取名字"], "book": "ISLP Ch12；資料：勇者咖啡會員", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/L09_pca_kmeans.ipynb", "manual": false}, {"id": "FINAL", "day": 3, "kind": "final", "name": "最終 Boss：勇者咖啡 2.0 兩份預測報告", "xp": 500, "emoji": "👑", "goals": ["迴歸篇：預測每日營收；分類篇：預測會員回購", "切分 → 基線 → 交叉驗證 → 調參 → 輸出預測檔 → 教師離線驗收 → 給老闆的兩份結論"], "book": "全課綜合；資料：勇者咖啡每日營收、會員（公開挑戰資料不含答案）", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/FINAL_boss_coffee2.ipynb", "manual": false}, {"id": "S1", "day": 2, "kind": "side", "name": "支線：帶安全資料上山", "xp": 100, "emoji": "🧗", "goals": ["使用課程合成或明確公開授權資料做一次迴歸或分類", "切分、基線、評估、一句結論", "Day 3 開場分享（教師另行確認）"], "book": "中場任務（教師確認）", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/S1_side_own_data.ipynb", "manual": true}, {"id": "S2", "day": 1, "kind": "side", "name": "支線：一千枚硬幣的陷阱（多重檢定）", "xp": 100, "emoji": "🪙", "goals": ["模擬 1000 次檢定看假發現", "Bonferroni 與 Benjamini–Hochberg", "什麼是 p-hacking"], "book": "ISLP Ch13", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/S2_side_multiple_testing.ipynb", "manual": false}, {"id": "S3", "day": 3, "kind": "side", "name": "支線：模型是怎麼學的（手刻梯度下降）", "xp": 100, "emoji": "⛷️", "goals": ["損失曲面與下山", "五行程式的梯度下降", "學習率太大／太小會怎樣"], "book": "補充", "url": "https://colab.research.google.com/github/johnnychao/stats-quest-2026/blob/v1.0.0-rc.1/notebooks/S3_side_gradient_descent.ipynb", "manual": false}];
+const DAYS = [{"day": 1, "island": "統計之丘", "emoji": "🌄", "color": "#2B8A3E", "date": "2026-09-21", "weekday": "一", "theme": "看懂資料：敘述統計、分布、抽樣與檢定"}, {"day": 2, "island": "模型之嶺", "emoji": "⛰️", "color": "#D9480F", "date": "2026-09-24", "weekday": "四", "theme": "建立模型：迴歸、過度擬合、分類與評估"}, {"day": 3, "island": "預測之巔", "emoji": "🗻", "color": "#5F3DC4", "date": "2026-10-05", "weekday": "一", "theme": "讓模型可靠：交叉驗證、集成、正規化、非監督初探；最終專題"}];
+const COURSE_NAMESPACE = "stats-quest-2026-datama";
+const PREFIX = "SQ";
+const TITLES = [[0, "山腳見習生"], [250, "資料偵探"], [600, "模型學徒"], [1000, "模型鍛造師"], [1400, "驗證守門人"], [1850, "統計傳說勇者"]];
+const TOTAL_XP = 1850;
+const QUIZ = [["一群人的月薪裡有幾個人特別高，哪個數字最能代表「一般人」的薪水？", ["平均數", "中位數", "最大值", "標準差"], 1], ["「標準差」在說什麼？", ["資料的平均", "資料散得多開", "資料有幾筆", "最大值減最小值"], 1], ["冰淇淋銷量和溺水人數一起上升，最合理的說法是？", ["吃冰會溺水", "溺水的人愛吃冰", "兩者都跟天氣熱有關", "一定純屬巧合"], 2], ["p 值 = 0.03 的意思最接近？", ["H0 為真的機率是 3%", "如果其實沒差，光靠運氣看到這麼大差距的機會約 3%", "差距有 97% 是真的", "效果很大"], 1], ["模型在「考古題」（訓練資料）上 100 分、在「正式考試」（新資料）上 60 分，這叫？", ["欠擬合", "過度擬合", "剛剛好", "資料太多"], 1], ["某病盛行率 2%，一個「全部猜沒病」的模型，準確率是？", ["2%", "50%", "98%", "無法判斷"], 2], ["樣本越大，樣本平均的「晃動」（標準誤）會？", ["變大", "變小", "不變", "看運氣"], 1], ["機器學習裡的「監督式學習」是指？", ["有老師在旁邊", "資料有標準答案（標籤）可以學", "模型會自己監督自己", "不需要資料"], 1]];
+const LEGACY = {"prefix": "PYQ", "namespace": "python-quest-2026-datama", "levels": ["L00", "L01", "L02", "L03", "B1", "L04", "L05", "B2", "L06", "L07", "B3", "L08", "L09", "B4", "L10", "L11", "B5", "L12", "L13", "FINAL"], "final": "FINAL", "total_xp": 2850, "final_title": "Python 傳說勇者", "site": "https://johnnychao.github.io/python-quest-2026/"};
+const KEY = "statsquest2026:rc:v1.0.0-rc.1";
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const MAIN = LEVELS.filter(l => l.kind !== "side");
+const SIDE = LEVELS.filter(l => l.kind === "side");
+
+let state = {nick: "", cleared: {}, quiz: null, legacy: null};
+try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && typeof s === "object") state = Object.assign(state, s); } catch(e) {}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {} }
+
+function normName(s){ return (s||"").normalize("NFKC").replace(/\s+/g, "").toLowerCase(); }
+function expectedCode(levelId, nick, namespace){ return sha256Hex(`${namespace || COURSE_NAMESPACE}|${levelId}|${normName(nick)}`).slice(0, 6).toUpperCase(); }
+function parseCode(raw){ const m = (raw||"").toUpperCase().replace(/\s+/g, "").match(/([0-9A-F]{6})$/); return m ? m[1] : null; }
+
+function xpNow(){ return MAIN.filter(l => state.cleared[l.id]).reduce((a, l) => a + l.xp, 0); }
+function sideXp(){ return SIDE.filter(l => state.cleared[l.id]).reduce((a, l) => a + l.xp, 0); }
+function titleFor(xp){ let t = TITLES[0][1]; for (const [th, name] of TITLES) if (xp >= th) t = name; return t; }
+function nextTitle(xp){ for (const [th, name] of TITLES) if (xp < th) return [th, name]; return null; }
+function dayDone(day){ const lv = MAIN.filter(l => l.day === day); return lv.every(l => state.cleared[l.id]); }
+function mainDone(){ return MAIN.every(l => state.cleared[l.id]); }
+function legacyFinal(){ return !!(state.legacy && state.legacy.level === LEGACY.final); }
+function fmtDate(iso){ const d = new Date(iso); return `${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}`; }
+
+function render(){
+  const xp = xpNow(), sxp = sideXp();
+  $("#nick").value = state.nick || "";
+  $("#rankTitle").textContent = titleFor(xp);
+  $("#xpNum").textContent = `${xp} / ${TOTAL_XP} XP` + (sxp ? `　+${sxp} 支線` : "");
+  $("#xpBar").style.width = (100 * xp / TOTAL_XP) + "%";
+  $("#xpProgress").setAttribute("aria-valuenow", String(xp));
+  $("#xpProgress").setAttribute("aria-valuetext", `${xp} / ${TOTAL_XP} XP`);
+  const nt = nextTitle(xp);
+  $("#nextTitle").textContent = nt ? `再 ${nt[0] - xp} XP 升級為「${nt[1]}」` : "已達最高稱號！";
+  const n = MAIN.filter(l => state.cleared[l.id]).length, ns = SIDE.filter(l => state.cleared[l.id]).length;
+  $("#stampCount").textContent = n;
+  $("#sideCount").textContent = ns;
+  $("#islandCount").textContent = DAYS.filter(d => dayDone(d.day)).length;
+  const seriesXp = xp + (legacyFinal() ? LEGACY.total_xp : 0);
+  $("#seriesXp").textContent = seriesXp;
+  $$(".badge[data-day]").forEach(b => b.classList.toggle("on", dayDone(+b.dataset.day)));
+  const lb = $("#legacyBadge"); lb.classList.toggle("on", !!state.legacy);
+  lb.textContent = state.legacy ? (legacyFinal() ? `🏆 ${LEGACY.final_title}` : `🏝️ 第一部冒險者（${state.legacy.level}）`) : "🏝️ 第一部：未繼承";
+  const sb = $("#seriesBadge"); const dual = legacyFinal() && mainDone(); sb.classList.toggle("on", dual); sb.textContent = dual ? "👑 雙傳說" : "👑 雙傳說（兩部全通關）";
+  $("#legacyForm").style.display = state.legacy ? "none" : "flex";
+  $("#legacyDone").style.display = state.legacy ? "flex" : "none";
+  if (state.legacy) $("#legacyText").textContent = legacyFinal() ? `已繼承第一部存檔：${LEGACY.final_title}，系列總 XP 加上 ${LEGACY.total_xp}。` : `已繼承第一部存檔（驗證了 ${state.legacy.level} 的密語）。輸入 FINAL 的密語可獲得「${LEGACY.final_title}」徽章與 ${LEGACY.total_xp} 系列 XP。`;
+  $$(".lv").forEach(el => {
+    const id = el.dataset.id, when = state.cleared[id];
+    el.classList.toggle("cleared", !!when);
+    if (when) $(".stamp-date", el).textContent = fmtDate(when);
+  });
+  $$(".island[id^=island-]").forEach(sec => {
+    const day = +sec.id.split("-")[1];
+    const lv = MAIN.filter(l => l.day === day), done = lv.filter(l => state.cleared[l.id]).length;
+    $(".ring-num", sec).textContent = `${done}/${lv.length}`;
+    $(".ring-fg", sec).style.strokeDashoffset = 100 - 100 * done / lv.length;
+    sec.classList.toggle("complete", done === lv.length);
+  });
+  $$(".slot").forEach(s => s.classList.toggle("on", !!state.cleared[s.dataset.id]));
+  $("#certBtn").disabled = !mainDone();
+  $("#certHint").textContent = mainDone() ? "三峰全部登頂！可預覽學習完成紀錄；正式結業由教師確認。" : `還差 ${MAIN.length - n} 個章可預覽學習完成紀錄`;
+  drawMap();
+}
+
+function toast(msg, bad){ const t = $("#toast"); t.textContent = msg; t.classList.toggle("bad", !!bad); t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 3400); }
+
+// ---- accessible modal：移入焦點、鎖住背景、Esc 關閉、關閉後還原焦點 ----
+let activeModal = null, modalTrigger = null;
+function modalFocusables(modal){
+  return $$("button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex='-1'])", modal)
+    .filter(el => !el.hidden && el.getClientRects().length > 0);
+}
+function openModal(modal, trigger){
+  if (!modal || activeModal) return;
+  activeModal = modal; modalTrigger = trigger || document.activeElement;
+  Array.from(document.body.children).forEach(el => {
+    if (el === modal || el.tagName === "SCRIPT") return;
+    el.dataset.modalPrevAria = el.hasAttribute("aria-hidden") ? el.getAttribute("aria-hidden") : "__none__";
+    el.setAttribute("aria-hidden", "true"); el.inert = true;
+  });
+  modal.classList.add("open"); modal.setAttribute("aria-hidden", "false");
+  const first = modalFocusables(modal)[0]; (first || modal).focus();
+}
+function closeModal(modal){
+  if (!modal || modal !== activeModal) return;
+  modal.classList.remove("open"); modal.setAttribute("aria-hidden", "true");
+  Array.from(document.body.children).forEach(el => {
+    if (el === modal || el.tagName === "SCRIPT") return;
+    el.inert = false;
+    const previous = el.dataset.modalPrevAria;
+    if (previous === "__none__") el.removeAttribute("aria-hidden");
+    else if (previous !== undefined) el.setAttribute("aria-hidden", previous);
+    delete el.dataset.modalPrevAria;
+  });
+  const restore = modalTrigger; activeModal = null; modalTrigger = null;
+  if (restore && typeof restore.focus === "function") restore.focus();
+}
+document.addEventListener("keydown", event => {
+  if (!activeModal) return;
+  if (event.key === "Escape") { event.preventDefault(); closeModal(activeModal); return; }
+  if (event.key !== "Tab") return;
+  const focusable = modalFocusables(activeModal);
+  if (!focusable.length) { event.preventDefault(); activeModal.focus(); return; }
+  const first = focusable[0], last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+});
+
+// ---- map：三座山 ----
+function drawMap(){
+  const svg = $("#chart"); if (!svg) return;
+  const W = 1000, H = 320; svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const base = 268;
+  const peaks = [{x: 200, h: 115, w: 300}, {x: 500, h: 165, w: 330}, {x: 800, h: 212, w: 360}];
+  let out = `<path d="M0 ${base} L${W} ${base} L${W} ${H} L0 ${H} Z" fill="color-mix(in srgb, var(--line) 50%, var(--bg2))"/>`;
+  // 步道
+  let route = `M 40 ${base - 6}`;
+  peaks.forEach(p => { route += ` Q ${p.x - p.w/4} ${base - p.h/3}, ${p.x} ${base - p.h + 14}`; route += ` Q ${p.x + p.w/4} ${base - p.h/3}, ${p.x + p.w/2 - 20} ${base - 8}`; });
+  DAYS.forEach((d, i) => {
+    const p = peaks[i], done = dayDone(d.day);
+    const lv = MAIN.filter(l => l.day === d.day), k = lv.filter(l => state.cleared[l.id]).length;
+    const top = base - p.h, l = p.x - p.w/2, r = p.x + p.w/2;
+    const path = `M ${l} ${base} Q ${p.x - p.w*0.28} ${base - p.h*0.35} ${p.x - p.w*0.14} ${top + p.h*0.25} L ${p.x} ${top} L ${p.x + p.w*0.12} ${top + p.h*0.22} Q ${p.x + p.w*0.3} ${base - p.h*0.3} ${r} ${base} Z`;
+    const snow = `M ${p.x - p.w*0.11} ${top + p.h*0.2} L ${p.x} ${top} L ${p.x + p.w*0.1} ${top + p.h*0.18} L ${p.x + p.w*0.05} ${top + p.h*0.24} L ${p.x + p.w*0.01} ${top + p.h*0.2} L ${p.x - p.w*0.04} ${top + p.h*0.26} L ${p.x - p.w*0.08} ${top + p.h*0.21} Z`;
+    out += `<g class="node" data-day="${d.day}" tabindex="0" role="link" aria-label="前往第 ${d.day} 峰 ${d.island}">
+      <path class="peak" d="${path}" fill="${d.color}" opacity="${k ? 1 : 0.6}"/>
+      <path class="snow" d="${snow}"/>
+      ${done ? `<circle class="done-ring" cx="${p.x}" cy="${top - 26}" r="22"/>` : ""}
+      <text class="flag" x="${p.x}" y="${top - 18}" text-anchor="middle">${done ? "🚩" : d.emoji}</text>
+      <text class="isl-label" x="${p.x}" y="${base + 26}" text-anchor="middle">${d.island}</text>
+      <text class="isl-sub" x="${p.x}" y="${base + 44}" text-anchor="middle">Day ${d.day} · ${k}/${lv.length}</text>
+    </g>`;
+  });
+  out = `<path class="route" d="${route}"/>` + out;
+  svg.innerHTML = out;
+  $$(".node", svg).forEach(n => { const go = () => { $("#island-" + n.dataset.day).scrollIntoView({behavior: "smooth", block: "start"}); }; n.addEventListener("click", go); n.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } }); });
+}
+
+// ---- today ----
+function renderToday(){
+  const box = $("#today"); const now = new Date();
+  const tz = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const d = DAYS.find(x => x.date === tz);
+  const first = DAYS[0], last = DAYS[DAYS.length - 1];
+  let html;
+  if (d){
+    const lv = MAIN.filter(l => l.day === d.day);
+    html = `<span class="t-label">今日路線</span><b>${d.emoji} Day ${d.day} · ${d.island}</b><span>${d.theme}</span><span class="t-links">${lv.map(l => `<a href="#lv-${l.id}">${l.id}</a>`).join("")}</span>`;
+  } else if (tz < first.date){
+    const days = Math.round((new Date(first.date) - new Date(tz)) / 86400000);
+    html = `<span class="t-label">登山倒數</span><b>距離 ${fmtDate(first.date)} 出發還有 ${days} 天</b><span>先做「存檔繼承」，再到 🎒 L00 補給站確認裝備。</span><span class="t-links"><a href="#lv-L00">前往補給站</a></span>`;
+  } else if (tz > last.date){
+    html = `<span class="t-label">登頂之後</span><b>三峰路線已完成</b><span>所有關卡都還在，隨時可以回來複習、補章或挑戰支線。</span>`;
+  } else {
+    const next = DAYS.find(x => x.date > tz);
+    const mid = next && next.day === 3;
+    html = `<span class="t-label">${mid ? "中場任務" : "休息日"}</span><b>下一站：${next.emoji} Day ${next.day} ${next.island}（${fmtDate(next.date)}）</b><span>${mid ? "補完未通關的關卡，並做支線 S1「帶安全資料上山」，Day 3 開場分享。" : "把還沒通關的關卡補完，或挑戰 Boss 的進階題。"}</span><span class="t-links">${mid ? '<a href="#side">支線任務</a>' : ""}</span>`;
+  }
+  box.innerHTML = html;
+}
+
+// ---- confetti ----
+function confetti(){
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c = $("#confetti"), ctx = c.getContext("2d"); c.width = innerWidth; c.height = innerHeight;
+  const cols = ["#C8412B","#2F6B8F","#B8860B","#2B8A3E","#5F3DC4","#D9480F"];
+  const ps = Array.from({length: 140}, () => ({x: innerWidth/2 + (Math.random()-.5)*200, y: innerHeight*0.4, vx: (Math.random()-.5)*14, vy: -Math.random()*12-4, r: Math.random()*6+3, c: cols[Math.random()*cols.length|0], a: Math.random()*Math.PI}));
+  let t = 0; const step = () => { ctx.clearRect(0,0,c.width,c.height); ps.forEach(p => { p.vy += .35; p.x += p.vx; p.y += p.vy; p.a += .1; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle = p.c; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6); ctx.restore(); }); if (++t < 110) requestAnimationFrame(step); else ctx.clearRect(0,0,c.width,c.height); }; step();
+}
+
+// ---- events ----
+$("#nickForm").addEventListener("submit", e => {
+  e.preventDefault(); const v = $("#nick").value.trim();
+  if (!v){ toast("請輸入暱稱", true); return; }
+  if (state.nick && normName(v) !== normName(state.nick)){
+    const hasProgress = Object.keys(state.cleared).length || state.quiz || state.legacy;
+    if (hasProgress && !confirm(`你正從「${state.nick}」改成「${v}」。這會清除這台電腦現有的集章、暖身結果與第一部繼承紀錄；確定要繼續嗎？`)) return;
+    state.cleared = {};
+    state.quiz = null;
+    state.legacy = null;
+  }
+  state.nick = v; save(); render(); toast(`歡迎回來，勇者 ${v}！在每本 Colab 筆記本的「暱稱」欄也要填一樣的名字。`);
+});
+$$(".stamp-form").forEach(f => f.addEventListener("submit", e => {
+  e.preventDefault(); const id = f.dataset.id, raw = f.code.value;
+  if (!state.nick){ toast("先在上方登錄你的暱稱，密語才對得上！", true); $("#nick").focus(); return; }
+  const got = parseCode(raw);
+  if (!got){ toast(`密語格式看起來不對，應該像 ${PREFIX}-L01-3DDC72`, true); return; }
+  if (got !== expectedCode(id, state.nick)){ toast("密語不正確。請確認筆記本裡填的暱稱和這裡一樣（大小寫、空白不影響），再複製一次密語。", true); return; }
+  const firstTime = !state.cleared[id];
+  state.cleared[id] = new Date().toISOString(); save(); render();
+  const lv = LEVELS.find(l => l.id === id);
+  if (firstTime){ confetti(); toast(`🎉 ${id} ${lv.name} 通關！+${lv.xp} XP`); if (lv.kind !== "side" && dayDone(lv.day)) setTimeout(() => toast(`🏅 第 ${lv.day} 峰登頂，獲得山峰徽章！`), 1800); if (mainDone() && legacyFinal()) setTimeout(() => toast("👑 兩部全通關：系列徽章「雙傳說」解鎖！"), 3200); }
+  else toast(`${id} 早就蓋過章了 👍`);
+}));
+$("#legacyForm").addEventListener("submit", e => {
+  e.preventDefault();
+  if (!state.nick){ toast("先登錄暱稱（要和第一部用的一樣）。", true); $("#nick").focus(); return; }
+  const raw = $("#legacyCode").value, got = parseCode(raw);
+  if (!got){ toast(`請貼上第一部的密語，例如 ${LEGACY.prefix}-FINAL-3DDC72`, true); return; }
+  const m = (raw||"").toUpperCase().replace(/\s+/g, "").match(/-([A-Z0-9]+)-[0-9A-F]{6}$/);
+  const cands = m ? [m[1]] : LEGACY.levels;
+  const hit = cands.find(id => LEGACY.levels.includes(id) && expectedCode(id, state.nick, LEGACY.namespace) === got);
+  if (!hit){ toast("這個密語和第一部的紀錄對不上：暱稱要和第一部登錄的一樣，密語要是第一部（PYQ-）的。", true); return; }
+  if (state.legacy && state.legacy.level === LEGACY.final && hit !== LEGACY.final){ toast("你已經繼承 FINAL 存檔了。"); return; }
+  state.legacy = {level: hit, at: new Date().toISOString()}; save(); render();
+  confetti(); toast(hit === LEGACY.final ? `🏆 存檔繼承成功：${LEGACY.final_title}！系列總 XP +${LEGACY.total_xp}` : `🏝️ 存檔繼承成功：驗證了第一部 ${hit} 的密語。`);
+});
+$("#certBtn").addEventListener("click", () => {
+  if (!mainDone()) return;
+  $("#certName").textContent = state.nick || "勇者";
+  $("#certTitle").textContent = titleFor(xpNow());
+  $("#certDate").textContent = new Date().toLocaleDateString("zh-TW", {year: "numeric", month: "long", day: "numeric"});
+  $("#certSeries").style.display = (legacyFinal() && mainDone()) ? "inline-block" : "none";
+  openModal($("#certModal"), $("#certBtn"));
+});
+$$("[data-close]").forEach(b => b.addEventListener("click", () => closeModal(b.closest(".modal"))));
+$$(".modal").forEach(m => m.addEventListener("click", e => { if (e.target === m) closeModal(m); }));
+$("#printCert").addEventListener("click", () => window.print());
+$("#resetBtn").addEventListener("click", () => { if (confirm("確定要清除這台電腦上的暱稱與闖關進度嗎？（密語可以再輸入一次）")){ state = {nick: "", cleared: {}, quiz: null, legacy: null}; save(); render(); toast("暱稱與進度已清除"); } });
+
+// ---- quiz ----
+$("#quizBtn").addEventListener("click", () => {
+  const box = $("#quizBody");
+  box.innerHTML = QUIZ.map((q, i) => `<fieldset class="q"><legend>${i+1}. ${q[0]}</legend>${q[1].map((o, j) => `<label><input type="radio" name="q${i}" value="${j}"> <span>${o}</span></label>`).join("")}</fieldset>`).join("") + `<button class="btn btn-sea" id="quizSubmit">交卷</button><div class="res" id="quizRes" role="status" aria-live="polite"></div>`;
+  openModal($("#quizModal"), $("#quizBtn"));
+  $("#quizSubmit").addEventListener("click", () => {
+    const answers = QUIZ.map((q, i) => box.querySelector(`input[name=q${i}]:checked`));
+    const firstMissing = answers.findIndex(answer => !answer);
+    if (firstMissing >= 0){
+      $("#quizRes").textContent = `還有 ${answers.filter(answer => !answer).length} 題未作答，請完成後再交卷。`;
+      box.querySelector(`input[name=q${firstMissing}]`).focus();
+      return;
+    }
+    let score = 0; QUIZ.forEach((q, i) => { if (+answers[i].value === q[2]) score++; });
+    state.quiz = {score, total: QUIZ.length, at: new Date().toISOString()}; save();
+    const msg = score >= 7 ? "太棒了，你的統計直覺已經很好！" : score >= 4 ? "不錯，有一些直覺了，這三天會把它們變成工具。" : "完全沒關係，這門課就是從「看懂資料」開始的！";
+    $("#quizRes").textContent = `你答對 ${score} / ${QUIZ.length} 題。${msg}`;
+  });
+});
+
+renderToday(); render();
+addEventListener("resize", () => { const c = $("#confetti"); c.width = innerWidth; c.height = innerHeight; });
+</script>
+</body>
+</html>

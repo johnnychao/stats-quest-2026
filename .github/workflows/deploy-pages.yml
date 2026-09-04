@@ -1,0 +1,230 @@
+name: Deploy versioned GitHub Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Deployment target
+        required: true
+        type: choice
+        options: [rc, production]
+      target_ref:
+        description: Immutable tag to deploy
+        required: true
+        type: string
+      rc_ref:
+        description: RC tag to preserve beside production
+        required: false
+        default: v1.0.0-rc.1
+        type: string
+      production_ref:
+        description: Production tag to preserve during RC deploy; blank only before first production
+        required: false
+        default: ''
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate deployment inputs
+        shell: bash
+        env:
+          WORKFLOW_REF: ${{ github.ref }}
+          MODE: ${{ inputs.mode }}
+          TARGET_REF: ${{ inputs.target_ref }}
+          RC_REF: ${{ inputs.rc_ref }}
+          PRODUCTION_REF: ${{ inputs.production_ref }}
+        run: |
+          set -euo pipefail
+          [[ "$WORKFLOW_REF" == "refs/heads/main" ]]
+          if [[ "$MODE" == "rc" ]]; then
+            [[ "$TARGET_REF" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]]
+            if [[ -n "$PRODUCTION_REF" ]]; then
+              [[ "$PRODUCTION_REF" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+            fi
+          else
+            [[ "$TARGET_REF" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+            [[ "$RC_REF" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]]
+            [[ -z "$PRODUCTION_REF" ]]
+          fi
+
+      - name: Check out trusted release validator
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          path: trusted
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Check out target tag
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: refs/tags/${{ inputs.target_ref }}
+          path: source
+          fetch-depth: 1
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Check out preserved RC tag
+        if: inputs.mode == 'production'
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: refs/tags/${{ inputs.rc_ref }}
+          path: rc-source
+          fetch-depth: 1
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Check out production tag preserved alongside RC
+        if: inputs.mode == 'rc' && inputs.production_ref != ''
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: refs/tags/${{ inputs.production_ref }}
+          path: production-source
+          fetch-depth: 1
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Verify immutable tag refs
+        shell: bash
+        env:
+          MODE: ${{ inputs.mode }}
+          TARGET_REF: ${{ inputs.target_ref }}
+          RC_REF: ${{ inputs.rc_ref }}
+          PRODUCTION_REF: ${{ inputs.production_ref }}
+        run: |
+          set -euo pipefail
+          git -C source show-ref --verify --quiet "refs/tags/$TARGET_REF"
+          [[ "$(git -C source rev-parse HEAD)" == "$(git -C source rev-parse "refs/tags/$TARGET_REF^{commit}")" ]]
+          if [[ "$MODE" == "production" ]]; then
+            git -C rc-source show-ref --verify --quiet "refs/tags/$RC_REF"
+            [[ "$(git -C rc-source rev-parse HEAD)" == "$(git -C rc-source rev-parse "refs/tags/$RC_REF^{commit}")" ]]
+          elif [[ -n "$PRODUCTION_REF" ]]; then
+            git -C production-source show-ref --verify --quiet "refs/tags/$PRODUCTION_REF"
+            [[ "$(git -C production-source rev-parse HEAD)" == "$(git -C production-source rev-parse "refs/tags/$PRODUCTION_REF^{commit}")" ]]
+          else
+            if ! REMOTE_TAGS="$(git -C source ls-remote --tags origin)"; then
+              echo "Unable to verify whether a production tag already exists; refusing RC deployment." >&2
+              exit 1
+            fi
+            EXISTING_PRODUCTION_TAGS="$(printf '%s\n' "$REMOTE_TAGS" | awk '{print $2}' | grep -E '^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$' || true)"
+            if [[ -n "$EXISTING_PRODUCTION_TAGS" ]]; then
+              echo "A production tag already exists. Set production_ref so the live root is preserved." >&2
+              printf '%s\n' "$EXISTING_PRODUCTION_TAGS" >&2
+              exit 1
+            fi
+          fi
+
+      - name: Validate checked-out release trees
+        shell: bash
+        env:
+          MODE: ${{ inputs.mode }}
+          TARGET_REF: ${{ inputs.target_ref }}
+          RC_REF: ${{ inputs.rc_ref }}
+          PRODUCTION_REF: ${{ inputs.production_ref }}
+        run: |
+          set -euo pipefail
+          python3 trusted/.github/scripts/validate_public.py source \
+            --expected-tag "$TARGET_REF" --expected-channel "$MODE"
+          if [[ "$MODE" == "production" ]]; then
+            python3 trusted/.github/scripts/validate_public.py rc-source \
+              --expected-tag "$RC_REF" --expected-channel rc
+          elif [[ -n "$PRODUCTION_REF" ]]; then
+            python3 trusted/.github/scripts/validate_public.py production-source \
+              --expected-tag "$PRODUCTION_REF" --expected-channel production
+          fi
+
+      - name: Verify preserved production tag matches the live root
+        if: inputs.mode == 'rc' && inputs.production_ref != ''
+        shell: bash
+        env:
+          PRODUCTION_REF: ${{ inputs.production_ref }}
+          LIVE_MANIFEST_URL: https://johnnychao.github.io/stats-quest-2026/RELEASE_MANIFEST.json
+          CACHE_BUSTER: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          manifest_file="$(mktemp)"
+          trap 'rm -f "$manifest_file"' EXIT
+          curl --fail --silent --show-error --location --retry 3 --retry-all-errors \
+            --connect-timeout 10 --max-time 60 \
+            "${LIVE_MANIFEST_URL}?gate=${CACHE_BUSTER}" --output "$manifest_file"
+          LIVE_TAG="$(python3 - "$manifest_file" <<'PY'
+          import json
+          import sys
+
+          with open(sys.argv[1], encoding="utf-8") as source:
+              payload = json.load(source)
+          value = payload.get("release_tag")
+          if not isinstance(value, str):
+              raise SystemExit("live RELEASE_MANIFEST.json has no string release_tag")
+          print(value)
+          PY
+          )"
+          [[ "$LIVE_TAG" == "$PRODUCTION_REF" ]] || {
+            echo "production_ref $PRODUCTION_REF does not match live root $LIVE_TAG" >&2
+            exit 1
+          }
+
+      - name: Build complete Pages artifact
+        shell: bash
+        env:
+          MODE: ${{ inputs.mode }}
+          TARGET_REF: ${{ inputs.target_ref }}
+          RC_REF: ${{ inputs.rc_ref }}
+          PRODUCTION_REF: ${{ inputs.production_ref }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          copy_public() {
+            local from="$1"
+            local to="$2"
+            mkdir -p "$to"
+            rsync -a --delete --exclude='.git/' --exclude='.github/' "$from/" "$to/"
+          }
+          if [[ "$MODE" == "rc" ]]; then
+            if [[ -n "$PRODUCTION_REF" ]]; then
+              copy_public production-source dist
+              python3 trusted/.github/scripts/validate_public.py dist --write-pages-manifest
+            else
+              sed "s|__RC_PATH__|rc/$TARGET_REF/|g" \
+                source/.github/pages/holding.html > dist/index.html
+            fi
+            copy_public source "dist/rc/$TARGET_REF"
+            python3 trusted/.github/scripts/validate_public.py \
+              "dist/rc/$TARGET_REF" --write-pages-manifest
+          else
+            copy_public source dist
+            python3 trusted/.github/scripts/validate_public.py dist --write-pages-manifest
+            copy_public rc-source "dist/rc/$RC_REF"
+            python3 trusted/.github/scripts/validate_public.py \
+              "dist/rc/$RC_REF" --write-pages-manifest
+          fi
+          touch dist/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: dist
+
+  deploy:
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

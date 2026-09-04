@@ -1,0 +1,258 @@
+{
+  "schema_version": 2,
+  "generator": "course-release-builder",
+  "generator_version": "v1.0.0-rc.1",
+  "policy": "fully synthetic teaching data; no real person or source rows redistributed",
+  "serialization": {
+    "encoding": "utf-8",
+    "newline": "LF",
+    "csv_index": false
+  },
+  "runtime": {
+    "python": "3.13.9",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3"
+  },
+  "datasets": {
+    "advertising.csv": {
+      "rows": 200,
+      "columns": [
+        "TV",
+        "Radio",
+        "Newspaper",
+        "Sales"
+      ],
+      "sha256": "6cf1b47502f12f8e6217c26e61e703cb4740c5c0a15d05f1d3c4fd445d7b4774",
+      "seed": 11,
+      "generator": "gen_adv",
+      "source_module_sha256": "ffd4d1a6589328ccdfcd062574d48aacc163c8956e3fee24fda3aa18affbfca2",
+      "privacy_classification": "fully_synthetic_no_real_person_records",
+      "label_removed": false
+    },
+    "coffee_ab_test.csv": {
+      "rows": 240,
+      "columns": [
+        "顧客編號",
+        "日期",
+        "組別",
+        "客單價",
+        "加購甜點"
+      ],
+      "sha256": "ffa87c74cb355367b86448a6368a7c3f0ec5d18e13c9674d036ce0ea350cc5d8",
+      "seed": 7,
+      "generator": "gen_ab",
+      "source_module_sha256": "ffd4d1a6589328ccdfcd062574d48aacc163c8956e3fee24fda3aa18affbfca2",
+      "privacy_classification": "fully_synthetic_no_real_person_records",
+      "label_removed": false
+    },
+    "coffee_daily.csv": {
+      "rows": 531,
+      "columns": [
+        "日期",
+        "星期",
+        "分店",
+        "假日",
+        "天氣",
+        "氣溫",
+        "促銷",
+        "上週同日營收",
+        "營收"
+      ],
+      "sha256": "b5c351b35a1b416e96e6bc52188193a72a91204ee4b2ca730b946243e50bf153",
+      "seed": 20260921,
+      "generator": "shared_coffee_universe:daily_train",
+      "source_module_sha256": "ffd4d1a6589328ccdfcd062574d48aacc163c8956e3fee24fda3aa18affbfca2",
+      "privacy_classification": "fully_synthetic_no_real_person_records",
+      "label_removed": false
+    },
+    "coffee_members.csv": {
+      "rows": 2000,
+      "columns": [
+        "會員編號",
+        "性別",
+        "年齡",
+        "加入月數",
+        "來店次數",
+        "平均消費",
+        "距上次來店天數",
+        "會員等級",
+        "電子報",
+        "住家距離",
+        "最愛類別",
+        "回購"
+      ],
+      "sha256": "deab61300c079c42d5076fd577f7a82440eec265b4b24c2e4b5e53fe242db808",
+      "seed": 20260921,
+      "generator": "shared_coffee_universe:members_train",
+      "source_module_sha256": "ffd4d1a6589328ccdfcd062574d48aacc163c8956e3fee24fda3aa18affbfca2",
+      "privacy_classification": "fully_synthetic_no_real_person_records",
+      "label_removed": false
+    },
+    "coffee_sales_aug.csv": {
+      "rows": 2563,
+      "columns": [
+        "訂單編號",
+        "日期",
+        "星期",
+        "分店",
+        "時段",
+        "天氣",
+        "會員編號",
+        "品項",
+        "類別",
+        "數量",
+        "單價",
+        "金額"
+      ],
+      "sha256": "f5591617a1fa0b77956a1dad180dda30768b37df2679d69d74af54078ab02d1c",
+      "seed": 20260921,
+      "generator": "shared_coffee_universe:sales_aug",
+      "source_module_sha256": "ffd4d1a6589328ccdfcd062574d48aacc163c8956e3fee24fda3aa18affbfca2",
+      "privacy_classification": "fully_synthetic_no_real_person_records",
+      "label_removed": false
+    },
+    "default.csv": {
+      "rows": 10000,
+      "columns": [
+        "default",
+        "student",
+        "balance",
+        "income"
+      ],
+      "sha256": "b2d8b903858e7759201ec04fd204a50f1195a81891e6c346e72f150f183d1ad0",
+      "seed": 20260904,
+      "generator": "make_synthetic_reference_data",
+      "source_module_sha256": "f8884b6b498f2b637eff86377dfdf6e6211b67f537506fab73d34fd873fd8976",
+      "privacy_classification": "fully_synthetic_no_real_person_records",
+      "label_removed": false
+    },
+    "final/coffee_daily_challenge.csv": {
+      "rows": 21,
+      "columns": [
+        "日期",
+        "星期",
+        "分店",
+        "假日",
+        "天氣",
+        "氣溫",
+        "促銷",
+        "上週同日營收"
+      ],
+      "sha256": "08c0829bfd40ba0dbfeb38c9fdc5c161e93d69e0aec98ded41538c703535500a",
+      "seed": 20260921,
+      "generator": "shared_coffee_universe:daily_test_without_label",
+      "source_module_sha256": "ffd4d1a6589328ccdfcd062574d48aacc163c8956e3fee24fda3aa18affbfca2",
+      "privacy_classification": "fully_synthetic_no_real_person_records",
+      "label_removed": true
+    },
+    "final/coffee_members_challenge.csv": {
+      "rows": 400,
+      "columns": [
+        "會員編號",
+        "性別",
+        "年齡",
+        "加入月數",
+        "來店次數",
+        "平均消費",
+        "距上次來店天數",
+        "會員等級",
+        "電子報",
+        "住家距離",
+        "最愛類別"
+      ],
+      "sha256": "ff2f76e29ee62ba883555d3964c6cb9146c154c11a850896172512a2de44ae6c",
+      "seed": 20260921,
+      "generator": "shared_coffee_universe:members_test_without_label",
+      "source_module_sha256": "ffd4d1a6589328ccdfcd062574d48aacc163c8956e3fee24fda3aa18affbfca2",
+      "privacy_classification": "fully_synthetic_no_real_person_records",
+      "label_removed": true
+    },
+    "heart_check.csv": {
+      "rows": 400,
+      "columns": [
+        "編號",
+        "年齡",
+        "性別",
+        "胸痛類型",
+        "靜止血壓",
+        "膽固醇",
+        "空腹血糖偏高",
+        "最大心跳",
+        "運動心絞痛",
+        "ST下降",
+        "心臟病"
+      ],
+      "sha256": "0699b49f9c6e13685414da14bb20bf1ad9d7d8c17ce097b0f2692a7a0532850a",
+      "seed": 5,
+      "generator": "gen_heart",
+      "source_module_sha256": "ffd4d1a6589328ccdfcd062574d48aacc163c8956e3fee24fda3aa18affbfca2",
+      "privacy_classification": "fully_synthetic_no_real_person_records",
+      "label_removed": false
+    },
+    "public/auto.csv": {
+      "rows": 392,
+      "columns": [
+        "mpg",
+        "cylinders",
+        "displacement",
+        "horsepower",
+        "weight",
+        "acceleration",
+        "year",
+        "origin",
+        "name"
+      ],
+      "sha256": "73ee6fd4c045efa39021d95e63ce15312a321f8e0543e0b89600991a2465e722",
+      "seed": 20260904,
+      "generator": "make_synthetic_reference_data",
+      "source_module_sha256": "f8884b6b498f2b637eff86377dfdf6e6211b67f537506fab73d34fd873fd8976",
+      "privacy_classification": "fully_synthetic_no_real_person_records",
+      "label_removed": false
+    },
+    "public/credit.csv": {
+      "rows": 400,
+      "columns": [
+        "ID",
+        "Income",
+        "Limit",
+        "Rating",
+        "Cards",
+        "Age",
+        "Education",
+        "Gender",
+        "Student",
+        "Married",
+        "Ethnicity",
+        "Balance"
+      ],
+      "sha256": "770e50f27b60efa1cb8d902e0d8b48d1c24aebf7190731c5761696a601b8d8c7",
+      "seed": 20260904,
+      "generator": "make_synthetic_reference_data",
+      "source_module_sha256": "f8884b6b498f2b637eff86377dfdf6e6211b67f537506fab73d34fd873fd8976",
+      "privacy_classification": "fully_synthetic_no_real_person_records",
+      "label_removed": false
+    },
+    "public/wage.csv": {
+      "rows": 3000,
+      "columns": [
+        "year",
+        "age",
+        "maritl",
+        "race",
+        "education",
+        "region",
+        "jobclass",
+        "health",
+        "health_ins",
+        "logwage",
+        "wage"
+      ],
+      "sha256": "3840bcf8783d7ac37563e809545120394504f237f1d91b6d4d2d299e21903197",
+      "seed": 20260904,
+      "generator": "make_synthetic_reference_data",
+      "source_module_sha256": "f8884b6b498f2b637eff86377dfdf6e6211b67f537506fab73d34fd873fd8976",
+      "privacy_classification": "fully_synthetic_no_real_person_records",
+      "label_removed": false
+    }
+  }
+}
