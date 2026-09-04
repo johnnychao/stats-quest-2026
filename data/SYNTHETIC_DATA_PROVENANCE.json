@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "generator": "course-release-builder",
-  "generator_version": "v1.1.0",
+  "generator_version": "v1.2.0-rc.1",
   "policy": "fully synthetic teaching data; no real person or source rows redistributed",
   "serialization": {
     "encoding": "utf-8",
@@ -253,6 +253,30 @@
       "source_module_sha256": "f8884b6b498f2b637eff86377dfdf6e6211b67f537506fab73d34fd873fd8976",
       "privacy_classification": "fully_synthetic_no_real_person_records",
       "label_removed": false
+    },
+    "coffee_sales_aug_raw.csv": {
+      "generator": "build/data_gen_raw.py::make_raw",
+      "seed": 20260904,
+      "rows": 2641,
+      "columns": [
+        "訂單編號",
+        "日期",
+        "星期",
+        "分店",
+        "時段",
+        "天氣",
+        "會員編號",
+        "品項",
+        "類別",
+        "數量",
+        "單價",
+        "金額"
+      ],
+      "sha256": "d77b51b188527fd5c81816040479e2ea33014b7ac3eb3845da28ebb13cf2072f",
+      "privacy_classification": "fully_synthetic_no_real_person_records",
+      "label_removed": false,
+      "source_module_sha256": "d6236fdb9f2c77183ed999f1b3947bb164220dbe718d0115a1579d94f1545e09",
+      "note": "由 coffee_sales_aug.csv 以固定 seed 注入可還原的髒資料（重複、名稱不一致、日期格式、幽靈訂單、單價錯字、缺金額）；供 P1 資料清理練習。"
     }
   }
 }

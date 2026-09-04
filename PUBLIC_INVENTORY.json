@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "notebooks": [
+    "L00_toolbox.ipynb",
+    "L01_describe.ipynb",
+    "L02_distributions.ipynb",
+    "L03_sampling_tests.ipynb",
+    "B1_boss_ab_test.ipynb",
+    "L04_linear_regression.ipynb",
+    "L05_overfitting.ipynb",
+    "L06_classification.ipynb",
+    "B2_boss_heart.ipynb",
+    "L07_cv_forest.ipynb",
+    "L08_regularization.ipynb",
+    "P1_camp_cleaning_rfm.ipynb",
+    "P2_camp_timeseries.ipynb",
+    "P3_camp_features_leakage.ipynb",
+    "L09_pca_kmeans.ipynb",
+    "FINAL_boss_coffee2.ipynb",
+    "S1_side_own_data.ipynb",
+    "S2_side_multiple_testing.ipynb",
+    "S3_side_gradient_descent.ipynb",
+    "S4_side_explain.ipynb"
+  ],
+  "extra_data_files": [
+    "data/coffee_sales_aug_raw.csv"
+  ],
+  "main_task_total": 85,
+  "font_setup_count": 16,
+  "csv_count": 13,
+  "notebook_summary": "20 本 Colab 筆記本（16 本主線、4 本支線）",
+  "csv_summary": "公開包共有 13 份固定種子合成 CSV"
+}

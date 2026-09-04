@@ -12,7 +12,10 @@ from pathlib import Path
 
 REPOSITORY = "johnnychao/stats-quest-2026"
 BASE_SITE_URL = "https://johnnychao.github.io/stats-quest-2026/"
-NOTEBOOKS = {
+# v1.0.0／v1.1.0 的公開清單（沒有 PUBLIC_INVENTORY.json 的樹一律用這組常數驗證）。
+# v1.2.0 起，新增的關卡與資料由樹內的 PUBLIC_INVENTORY.json 宣告，validator 再逐項核對實際內容；
+# 宣告只能新增 notebooks/*.ipynb 與 data/*.csv，其餘 allowlist 與所有邊界檢查不變。
+DEFAULT_NOTEBOOKS = {
     "L00_toolbox.ipynb", "L01_describe.ipynb", "L02_distributions.ipynb",
     "L03_sampling_tests.ipynb", "B1_boss_ab_test.ipynb", "L04_linear_regression.ipynb",
     "L05_overfitting.ipynb", "L06_classification.ipynb", "B2_boss_heart.ipynb",
@@ -20,7 +23,22 @@ NOTEBOOKS = {
     "FINAL_boss_coffee2.ipynb", "S1_side_own_data.ipynb",
     "S2_side_multiple_testing.ipynb", "S3_side_gradient_descent.ipynb",
 }
-EXPECTED_PUBLIC_FILES = {
+DEFAULT_INVENTORY = {
+    "schema_version": 1,
+    "notebooks": sorted(DEFAULT_NOTEBOOKS),
+    "extra_data_files": [],
+    "main_task_total": 69,
+    "font_setup_count": 14,
+    "csv_count": 12,
+    "notebook_summary": "16 本 Colab 筆記本（13 本主線、3 本支線）",
+    "csv_summary": "公開包共有 12 份固定種子合成 CSV",
+}
+# 先前正式版（v1.0.0～v1.1.0）所附 validator 的 SHA-256；讓新版 validator 仍能核對舊 tag 的公開樹。
+KNOWN_PREVIOUS_VALIDATOR_SHA256 = {
+    "3e2e583c97826c454207caa904302377a8799d4c984c97bfd850142f37b76b2c",
+}
+NOTEBOOKS = set(DEFAULT_NOTEBOOKS)
+BASE_PUBLIC_FILES = {
     ".gitattributes",
     ".github/pages/holding.html",
     ".github/scripts/validate_public.py",
@@ -48,8 +66,38 @@ EXPECTED_PUBLIC_FILES = {
     "data/public/auto.csv",
     "data/public/credit.csv",
     "data/public/wage.csv",
-    *(f"notebooks/{name}" for name in NOTEBOOKS),
 }
+EXPECTED_PUBLIC_FILES = BASE_PUBLIC_FILES | {f"notebooks/{name}" for name in NOTEBOOKS}
+
+
+def load_inventory(root: Path) -> dict:
+    """讀取樹內宣告的公開清單；沒有就用 v1.0.0 的預設清單。宣告本身也會被逐項核對。"""
+    global NOTEBOOKS, EXPECTED_PUBLIC_FILES
+    path = root / "PUBLIC_INVENTORY.json"
+    if not path.exists():
+        return dict(DEFAULT_INVENTORY)
+    inventory = json.loads(path.read_text(encoding="utf-8"))
+    if inventory.get("schema_version") != 1:
+        raise AssertionError("PUBLIC_INVENTORY.json schema_version must be 1")
+    notebooks = inventory.get("notebooks")
+    if not isinstance(notebooks, list) or not set(DEFAULT_NOTEBOOKS) <= set(notebooks):
+        raise AssertionError("PUBLIC_INVENTORY.json must keep every original notebook")
+    for name in notebooks:
+        if not re.fullmatch(r"[A-Z0-9]+_[A-Za-z0-9_]+\.ipynb", name):
+            raise AssertionError(f"invalid notebook name in inventory: {name}")
+    extras = inventory.get("extra_data_files", [])
+    for rel in extras:
+        if not re.fullmatch(r"data/[a-z0-9_]+\.csv", rel):
+            raise AssertionError(f"inventory may only add data/*.csv: {rel}")
+    for key in ("main_task_total", "font_setup_count", "csv_count"):
+        if not isinstance(inventory.get(key), int):
+            raise AssertionError(f"PUBLIC_INVENTORY.json {key} must be an integer")
+    for key in ("notebook_summary", "csv_summary"):
+        if not isinstance(inventory.get(key), str) or not inventory[key]:
+            raise AssertionError(f"PUBLIC_INVENTORY.json {key} must be a string")
+    NOTEBOOKS = set(notebooks)
+    EXPECTED_PUBLIC_FILES = BASE_PUBLIC_FILES | {"PUBLIC_INVENTORY.json"} | set(extras) | {f"notebooks/{name}" for name in NOTEBOOKS}
+    return inventory
 
 
 def digest(path: Path) -> str:
@@ -118,6 +166,7 @@ def main() -> int:
         print(json.dumps({"status": "written", "root": str(root)}, ensure_ascii=False))
         return 0
 
+    inventory = load_inventory(root)
     manifest_path = root / "RELEASE_MANIFEST.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     tag = manifest["release_tag"]
@@ -182,7 +231,9 @@ def main() -> int:
     if target_validator.resolve() != validator_path:
         trusted_text = validator_path.read_text(encoding="utf-8")
         target_text = target_validator.read_text(encoding="utf-8")
-        if target_text != trusted_text:
+        target_digest = hashlib.sha256(target_text.encode("utf-8")).hexdigest()
+        # 工作流程永遠執行 main 上的（trusted）validator；tag 內的副本必須是 main 版或先前已發布的正式版。
+        if target_text != trusted_text and target_digest not in KNOWN_PREVIOUS_VALIDATOR_SHA256:
             raise AssertionError("target release validator differs from trusted main validator")
     for relative, path in actual.items():
         if b"\r\n" in path.read_bytes():
@@ -202,7 +253,7 @@ def main() -> int:
     notebook_dir = root / "notebooks"
     found_notebooks = {path.name for path in notebook_dir.glob("*.ipynb")}
     if found_notebooks != NOTEBOOKS:
-        raise AssertionError("public notebook inventory is not exactly 16")
+        raise AssertionError(f"public notebook inventory is not exactly {len(NOTEBOOKS)}")
 
     task_total = 0
     font_setup_count = 0
@@ -232,10 +283,10 @@ def main() -> int:
         if not path.name.startswith("S"):
             match = re.search(r"^_TASKS = (.+)$", text, flags=re.M)
             task_total += len(json.loads(match.group(1))) if match else 0
-    if task_total != 69:
-        raise AssertionError(f"main task count is {task_total}, expected 69")
-    if font_setup_count != 14:
-        raise AssertionError(f"Chinese font setup count is {font_setup_count}, expected 14")
+    if task_total != inventory["main_task_total"]:
+        raise AssertionError(f"main task count is {task_total}, expected {inventory['main_task_total']}")
+    if font_setup_count != inventory["font_setup_count"]:
+        raise AssertionError(f"Chinese font setup count is {font_setup_count}, expected {inventory['font_setup_count']}")
 
     index = scan_chunks[0]
     scan_text = "\n".join(scan_chunks)
@@ -272,9 +323,9 @@ def main() -> int:
         '<span class="slot-mark" aria-hidden="true">',
         '<fieldset class="q">', 'min-height:44px', '--on-sea:#102A38',
         '不含姓名、學號或電話', '自我學習紀錄，不是身分、成績或教師驗收證明',
-        '16 本 Colab 筆記本（13 本主線、3 本支線）',
+        inventory["notebook_summary"],
         '這組題目與紙本的 6 分鐘前後測不同，不納入前後測比較',
-        '公開包共有 12 份固定種子合成 CSV',
+        inventory["csv_summary"],
         '不作醫療診斷、個人風險判定或臨床效能宣稱',
         '紙本先介紹 S2，課外可完成',
         '.res-cat a,footer a{display:inline-flex;align-items:center;min-height:44px}',
@@ -331,8 +382,10 @@ def main() -> int:
     if provenance.get("serialization") != {"encoding": "utf-8", "newline": "LF", "csv_index": False}:
         raise AssertionError("synthetic data serialization contract mismatch")
     provenance_records = provenance.get("datasets", {})
+    if len(expected_csvs) != inventory["csv_count"]:
+        raise AssertionError(f"public CSV count is {len(expected_csvs)}, expected {inventory['csv_count']}")
     if set(provenance_records) != expected_csvs:
-        raise AssertionError("synthetic data provenance must cover all 12 CSV files")
+        raise AssertionError(f"synthetic data provenance must cover all {inventory['csv_count']} CSV files")
     for relative in sorted(expected_csvs):
         path = data_root / relative
         rows, columns = csv_shape(path)
