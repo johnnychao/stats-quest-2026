@@ -1,7 +1,7 @@
 {
   "package": "stats-quest-2026-public",
   "schema_version": 1,
-  "release_tag": "v1.2.0",
+  "release_tag": "v1.2.1",
   "release_channel": "production",
   "site_base_url": "https://johnnychao.github.io/stats-quest-2026/",
   "files": [
@@ -43,7 +43,7 @@
     {
       "path": "ENVIRONMENT.md",
       "bytes": 818,
-      "sha256": "3f86223a1d88d68edc1e1865ee9adf455969a5b1fbac15519a571c6ed523fdf3"
+      "sha256": "6de8287380a6e920df2af38b9e046f6ca0a86024e5779ba441e277e2749e1897"
     },
     {
       "path": "PUBLIC_INVENTORY.json",
@@ -68,7 +68,7 @@
     {
       "path": "data/SYNTHETIC_DATA_PROVENANCE.json",
       "bytes": 8734,
-      "sha256": "b9d03955bffc469745efb01f77bd3ff23b2542e87669833deaefc88c0c2a0753"
+      "sha256": "fcc9b6b9bd72203cd1082877dd41c208ed57f71fe2776872b19d1a866469c5ba"
     },
     {
       "path": "data/advertising.csv",
@@ -137,93 +137,93 @@
     },
     {
       "path": "index.html",
-      "bytes": 107477,
-      "sha256": "dd16d4c737e76aea636a9310e3837706372a4b4de832be4e8cbec79902677720"
+      "bytes": 107721,
+      "sha256": "cd0aa02727fff1f44eb83f8aef77b9e684d5dcf14e52cb4e819dd99da1a306db"
     },
     {
       "path": "notebooks/B1_boss_ab_test.ipynb",
       "bytes": 32246,
-      "sha256": "cc5515b224b276d4c8173ea361a34737e5e6455a8d80404e28376f2d891a8203"
+      "sha256": "b46ea2a6fc1d3adf1826f570a66f3436fe458f4bd7bce121c32cb67039975934"
     },
     {
       "path": "notebooks/B2_boss_heart.ipynb",
       "bytes": 37858,
-      "sha256": "daaa7f2fd74df82c308f0a71c4a084346916cb5c226a22f1f277918e87763040"
+      "sha256": "da4abd541e88b70e9a47abf6ae0eac974ed725b8ad0a058c68e003a2fb298af1"
     },
     {
       "path": "notebooks/FINAL_boss_coffee2.ipynb",
       "bytes": 41062,
-      "sha256": "c7ad7dbdf982e41dfff18467ee52870f59ffb4175612af6638bd138678a5d9be"
+      "sha256": "8056b295ab0564917d168a6fa178f10ed8d41d01f96cebe98ad457832a18fa4c"
     },
     {
       "path": "notebooks/L00_toolbox.ipynb",
       "bytes": 27411,
-      "sha256": "db41d988e8f09e061f2d998352b2e3af2fcba158ea0eabf5240dbd27245edee1"
+      "sha256": "e71f187b29062fb013677c192ef5c0a94c2a573fc1a7b4a65d6c3121c0a3e8db"
     },
     {
       "path": "notebooks/L01_describe.ipynb",
       "bytes": 36789,
-      "sha256": "77b75cbdfbf39648724dbd539f8825230d54ec9bb5084c8354cbef05b13888c7"
+      "sha256": "497c6dcdc88583257796fd409b1f5245f058e93abbec3b345e8d8dadcf67ae3e"
     },
     {
       "path": "notebooks/L02_distributions.ipynb",
       "bytes": 34916,
-      "sha256": "9b1ad81fcd1b031ed4587daee1d5cdfdf396bbd5a7165ac764b5301f195615d3"
+      "sha256": "1fa6033d9a7e50c2ae8111e117a4aca2ac8227acec356a2318b93f79adee23ed"
     },
     {
       "path": "notebooks/L03_sampling_tests.ipynb",
       "bytes": 39828,
-      "sha256": "2d3dbe3ffd2a512422e91455d5dab2a4ac35e55ce789b422443a456188521747"
+      "sha256": "7079502cb365298fd4095f9edb9ca2a6cc8652fbffa233d1f84f82171cc9b7fb"
     },
     {
       "path": "notebooks/L04_linear_regression.ipynb",
       "bytes": 38735,
-      "sha256": "2daa74a4b5e7404f619bf1054cccfe84ad5b494ac7a89cfe30d01fa6e2333815"
+      "sha256": "a3e2269a23039a8c295ae9c8b59844214734173c2234e616f68aacc140c3fd3b"
     },
     {
       "path": "notebooks/L05_overfitting.ipynb",
       "bytes": 39735,
-      "sha256": "a5b90776fcfe200ee5d0779bb9110d7d354769501e84ad181e0649f1321e900e"
+      "sha256": "9c50062c9868d7193c635cde49e66080b2346ac4bc573fb3061d91cd664b6fb9"
     },
     {
       "path": "notebooks/L06_classification.ipynb",
       "bytes": 41242,
-      "sha256": "f7b3025edd0f89d1cf3c3a300381621d6fbac4a61622e27418974578c6cc1468"
+      "sha256": "a76f9850f1385e83b5bf17b7be899293e105bdcff6bf127aeb43aa6095e02cda"
     },
     {
       "path": "notebooks/L07_cv_forest.ipynb",
       "bytes": 39732,
-      "sha256": "bff20a32a8a5201262d75001919941b31cad1802c44b89a34fbb257d9119f70e"
+      "sha256": "c6f6467075dfde7745237cfd97a7e26e76d0809b6ae078aac9d9f930e0df30fa"
     },
     {
       "path": "notebooks/L08_regularization.ipynb",
       "bytes": 38931,
-      "sha256": "d12f65678e300e14c401b56dc499165efed341e2fec5f40bd1b4529894d99ebd"
+      "sha256": "c92ba7caea7c0ec0317dd16a263bc042ad65fd4af36fea875456493165363b6c"
     },
     {
       "path": "notebooks/L09_pca_kmeans.ipynb",
       "bytes": 35286,
-      "sha256": "e4b3c6880c997b3c4ccd6cfbe0d9cc3df9b4247adfcf91862f8a098eadd059bf"
+      "sha256": "33a18022a620aee9d466431ac8d0317d1dffb657c4619aa6f380b166764c9e4f"
     },
     {
       "path": "notebooks/P1_camp_cleaning_rfm.ipynb",
       "bytes": 37762,
-      "sha256": "0cd6b675f4fef1e9000435f49f59080662db3f725415b7caf09e1c49418342d3"
+      "sha256": "a1630b1756f2e408774b389042bc7f1158cc347e7f13c98dcc3cdaae0a984648"
     },
     {
       "path": "notebooks/P2_camp_timeseries.ipynb",
       "bytes": 37596,
-      "sha256": "4ce0e0a97256c80efa7b6b66d282d4a122a4c7d506eecc185acd6476dea91154"
+      "sha256": "da4c6db7cb6cdaeafbba2140954f56041d9c79d72a5e5dd907b02e624c6153df"
     },
     {
       "path": "notebooks/P3_camp_features_leakage.ipynb",
       "bytes": 32797,
-      "sha256": "c3895f6ff002136db74824ce32f9de49ca29546ba942f892bc906a9d0477fa7a"
+      "sha256": "598e5e00cbbcdb8960ddfdddce62fb84039c31e5466aac374bbb514f34af7aae"
     },
     {
       "path": "notebooks/S1_side_own_data.ipynb",
       "bytes": 6451,
-      "sha256": "1fad736fb276813ab523f574020068b68674417712a12809917b2f463327fafc"
+      "sha256": "2fb5b957898ee118996ecccd496916c97c022f2fcb429b710d48b8760192b555"
     },
     {
       "path": "notebooks/S2_side_multiple_testing.ipynb",
@@ -238,7 +238,7 @@
     {
       "path": "notebooks/S4_side_explain.ipynb",
       "bytes": 32148,
-      "sha256": "5b64b1f16b16c3419d277e0bb9ac61099ed8fbfb14af0a7de388a36271f2adf5"
+      "sha256": "48fabbf8e7efe4e382746c8fe15d9f98d979adefa9a28a4cd3d990a7fe7ea942"
     },
     {
       "path": "requirements.txt",
